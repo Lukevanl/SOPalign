@@ -2,6 +2,7 @@
 __pycache__/
 *.py[cod]
 *.pt
+*.p
 *$py.class
 
 # zip files/ mac store
