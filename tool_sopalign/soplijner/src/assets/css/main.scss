@@ -1,0 +1,96 @@
+@import "~bootstrap/scss/bootstrap";
+@import "colors";
+
+table {
+    word-wrap: break-word;
+  }
+  
+tr:nth-child(odd) {
+    background-color: $light-turquoise;
+  }
+
+tr:nth-child(even) {
+    background-color: $extra-light-turquoise;
+  }
+
+td {
+    text-align: center;
+    vertical-align: middle;
+}
+
+.table-button {
+    background-color: inherit;
+    border : 0;
+  }
+  
+.table-button-plus {
+    background-color: inherit;
+    border : 0;
+    color: $turquoise;
+  
+  }
+
+.nav {
+    background-color: $rumc-dark;
+      align-items: center;
+      padding: 10px 20px;
+      -moz-column-gap: 30px;
+      column-gap: 30px;
+      justify-content: center;
+  }
+
+  a {
+    font-weight: 500;
+    color: white;
+  }
+
+
+  /* mouse over link */
+  a:hover {
+    color: lightgray;
+  }
+  
+  /* selected link */
+  a:active {
+    color: white;
+  }
+
+  .panel {
+    text-align: center;
+    -webkit-box-shadow: 0 0 10px 2px rgba(0, 0, 0, 0.05);
+    box-shadow: 0 0 10px 2px rgba(0, 0, 0, 0.05);
+    margin: 18px;
+    background-color: #FFFFFF;
+  }
+  
+  .panel .panel-heading {
+    text-align: center;
+    padding: 12px 22px;
+    border-top-right-radius: 5px;
+    border-top-left-radius: 5px;
+  }
+  
+  .panel .panel-body {
+    padding: 12px 22px;
+  }
+
+  .panel .panel-footer {
+    padding: 0;
+  }
+  
+  .panel-default > .panel-heading {
+    background-color: $rumc-dark;
+    color: #FFFFFF;
+    border-color: transparent;
+  }
+
+  .panel-footer {
+    background-color: $rumc-dark;
+    color: #FFFFFF;
+    font-weight: 400;
+    height:30px;
+    border-bottom-right-radius: 5px;
+    border-bottom-left-radius: 5px;
+  }
+  
+

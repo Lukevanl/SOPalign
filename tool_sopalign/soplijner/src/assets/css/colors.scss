@@ -1,0 +1,64 @@
+$zd_primary: #01579B;
+$zd_secondary:#4DD0E1;
+$zd_danger: #FF7851;
+$zd_info: #6CC3D5;
+$zd_success: #56CC9D;
+$zd_warning: #FFCE67;
+$zd_light: #F8F9FA;
+$zd_dark: #343A40;
+
+$base: #333333;
+$white: #FFFFFF;
+$green: #27ae60;
+$orange: #F39C12;
+$dark-orange: #D6890F;
+$blue: #26C6DA;
+$yellow: #D9B217;
+$red: #E75F51;
+$turquoise: #26C6DA;
+$medium-turquoise: #96D2DA;
+$light-turquoise: #E0F2F2;
+$extra-light-turquoise: #f2f9f9;
+$rumc-dark: #006991;
+$rumc-light: #00b2df;
+
+
+
+$theme-colors: (
+        "primary": $zd_primary,
+        "secondary": $zd_secondary,
+        "danger": $zd_danger,
+        "info": $zd_info,
+        "success": $zd_success,
+        "warning": $zd_warning,
+        "light": $zd_light,
+        "dark": $zd_dark,
+);
+
+$enable-negative-margins: true;
+
+//Screen_sizes
+
+$grid-breakpoints: (
+        xs: 0,
+        sm: 768px,
+        md: 992px,
+        lg: 1200px,
+        xl: 1400px,
+        xxl: 1600px
+);
+
+$container-max-widths: (
+        sm: 768px,
+        md: 992px,
+        lg: 1200px,
+        xl: 1400px,
+        xxl: 1600px
+);
+
+
+@media only screen and (min-width: 1200px) {
+  .container-xl, .container-lg, .container-md, .container-sm, .container {
+    max-width: 1170px !important;
+  }
+}

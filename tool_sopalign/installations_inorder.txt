@@ -1,0 +1,12 @@
+pip install -r requirements.txt
+pip install -U sentence-transformers
+pip install pandas
+pip install syntok
+pip install PyPDF2
+pip install strsimpy
+pip install openpyxl
+conda install pytorch==1.11.0 torchvision==0.12.0 torchaudio==0.11.0 cudatoolkit=11.3 -c pytorch
+pip install fastapi
+pip install uvicorn
+pip install python-multipart
+pip install pdfminer.six
