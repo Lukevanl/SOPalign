@@ -1,3 +1,9 @@
+For training the models we built on the paper: *SICK-NL: A Dataset for Dutch Natural Language Inference*. We made additons to the code for our new dataset (medNLI and a combination of SICK and medNLI) and updated the code for newer library versions (the exact versions used can be found in req_from_conda.txt). The generated datasets can be found in the data/tasks folder.
+
+In these files *go* means that it was translated by Google Translate while *dl* means it was translated by DeepL.
+
+Below is the original README from https://github.com/gijswijnholds/sick_nl:
+
 # SICK-NL
 
 A translation of the SICK dataset, for evaluating relatedness and entailment models for Dutch. SICK-NL was obtained by semi-automatically translating SICK (Marelli et al., 2014). Additionally, we provide two stress tests derived from our translation, that deal with semantically equivalent but syntactically different phrasings of the same sentence.
