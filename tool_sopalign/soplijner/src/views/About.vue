@@ -27,7 +27,7 @@
               <div data-matchheights="b" class="panel-body">
                 <div class="container-small ">
                   <div data-matchheights="d" class="description">
-                    <img src="../assets/img/rumc2.png" alt="Company logo" style="max-height: 150px">
+                    <img src="../assets/img/rumc.png" alt="Company logo" style="max-height: 150px">
                     <br>
                   </div>
                 </div>

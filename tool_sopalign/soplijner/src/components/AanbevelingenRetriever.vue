@@ -22,7 +22,7 @@
               </tr>
           </tbody>
     </table>
-    <h3>Upload aanbevelingen from tsv</h3>
+    <h3>Upload aanbevelingen vanaf tsv bestand</h3>
     <form id="csvForm">
     <input type="file" accept=".tsv" id="aanbevelingenFile"/>
     <br>
