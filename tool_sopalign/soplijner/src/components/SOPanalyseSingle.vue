@@ -112,17 +112,19 @@
                       <th scope="col">Aanbeveling ID</th>
                       <th scope="col">Label</th>
                       <th scope="col">Probability</th>
+                      <th scope="col">Corrigeer</th>
                       </tr>
                   </thead>
                   <tbody>
                       <tr style="display:none;"></tr> <!--Else the colors dont alternate properly-->
                       <tr v-if="resultsNotLoaded">
-                        <td align="center" colspan="5"><font-awesome-icon icon="spinner" spin/></td>
+                        <td align="center" colspan="6"><font-awesome-icon icon="spinner" spin/></td>
                       </tr>
                       <AnalysisResultsRow
                           v-bind:value="value"
                           v-for="(value, index) in filteredResults"
                           :key="index"
+                          @correct="openCorrectionModal(value)"
                           @goto="goToText(index)"
                       />
                   </tbody>
@@ -319,6 +321,9 @@ export default defineComponent({
       // const windowIframe = (elem.contentWindow as any)
       const windowAny = (window as any)
       windowAny.find(this.resultsAnalyser[index][0][1], true, true)
+    },
+    openCorrectionModal (value: any) {
+      alert('testing...')
     }
   },
   data () {

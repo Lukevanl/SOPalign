@@ -135,17 +135,19 @@
                       <th scope="col">Aanbeveling ID</th>
                       <th scope="col">Label</th>
                       <th scope="col">Probability</th>
-                      <th scope="col">Filename</th>
+                      <th scope="col">Corrigeer</th>
+                      <th scope="col">Bestandsnaam</th>
                       </tr>
                   </thead>
                   <tbody>
                       <tr style="display:none;"></tr> <!--Else the colors dont alternate properly-->
                       <tr v-if="resultsNotLoaded">
-                        <td align="center" colspan="6"><font-awesome-icon icon="spinner" spin/></td>
+                        <td align="center" colspan="7"><font-awesome-icon icon="spinner" spin/></td>
                       </tr>
                       <AnalysisResultsRow
                           v-bind:value="value"
                           v-bind:key="index"
+                          @correct="openCorrectionModal(value)"
                           v-for="(value, index) in filteredResults"
                       />
                   </tbody>
@@ -306,6 +308,9 @@ export default defineComponent({
       this.allResultsAnalyser = []
       this.filteredResults = []
       this.indexCurrentPDFUploading = 0
+    },
+    openCorrectionModal (value: any) {
+      alert('testing...')
     },
     async analyseWithStrictness (strictness: string) {
       this.resetVars()

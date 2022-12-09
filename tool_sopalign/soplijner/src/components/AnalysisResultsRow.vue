@@ -5,6 +5,7 @@
     <td> {{ value[1] }} </td>
     <td class="tdLabel"> {{ value[2] }} </td>
     <td> {{ probability }} </td>
+    <td> <button @click="$emit('correct')" class="table-button" data-bs-toggle="tooltip" title="Corrigeer annotatie"><font-awesome-icon icon="wand-magic-sparkles" size="2x" /></button> </td>
     <td v-if="value.length === 5"> {{ value[4] }} </td>
 </tr>
 </template>
