@@ -9,7 +9,7 @@
               <div data-matchheights="b" class="panel-body">
                 <div class="container-small ">
                   <div data-matchheights="d" class="description">
-                    <img src="../assets/img/ru.png" alt="Company logo" style="max-height: 150px">
+                    <img src="../assets/img/ru2.png" alt="Company logo" style="max-height: 150px; max-height:100%; max-width:100%;">
                     <br>
                   </div>
                 </div>
@@ -27,7 +27,7 @@
               <div data-matchheights="b" class="panel-body">
                 <div class="container-small ">
                   <div data-matchheights="d" class="description">
-                    <img src="../assets/img/rumc.png" alt="Company logo" style="max-height: 150px">
+                    <img src="../assets/img/rumc2.png" alt="Company logo" style="max-height: 150px; max-height:100%; max-width:100%;">
                     <br>
                   </div>
                 </div>
@@ -48,7 +48,7 @@
               <div data-matchheights="b" class="panel-body">
                 <div class="container-small ">
                   <div data-matchheights="d" class="description">
-                    <img src="../assets/img/abr.png" alt="Company logo" style="max-height: 150px">
+                    <img src="../assets/img/abr2.png" alt="Company logo" style="max-height: 150px; max-height:100%; max-width:100%;">
                     <br>
                   </div>
                 </div>
@@ -66,7 +66,7 @@
               <div data-matchheights="b" class="panel-body">
                 <div class="container-small ">
                   <div data-matchheights="d" class="description">
-                    <img src="../assets/img/gain.jpg" alt="Company logo" style="max-height: 150px">
+                    <img src="../assets/img/gain2.png" alt="Company logo" style="max-height: 150px; max-height:100%; max-width:100%;">
                     <br>
                   </div>
                 </div>
