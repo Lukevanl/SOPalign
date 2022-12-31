@@ -145,6 +145,9 @@ ADD ./model_data /code_docker/model_data
 RUN pip3 install --no-cache-dir --upgrade -r /code_docker/req_from_conda.txt
 
 #
+RUN pip3 install --no-cache-dir psycopg2-binary 
+
+#
 RUN pip3 --timeout=500 --no-cache-dir install torch==1.11.0+cu113 -f https://download.pytorch.org/whl/cu113/torch_stable.html
 
 # 

@@ -127,6 +127,9 @@
                   </label>
                   </div>
                 </div>
+                <div>
+                  <button type="button" id="reloadButton" class="btn btn-primary" @click="reloadAllWithChanges()" disabled style="color:white;">Herlaad met correcties</button>
+                </div>
                 <table class="table table-bordered">
                   <thead style="text-align: center; background-color: #E0F2F2;">
                       <tr class="table_head">
@@ -147,7 +150,7 @@
                       <AnalysisResultsRow
                           v-bind:value="value"
                           v-bind:key="index"
-                          @correct="openCorrectionModal(value)"
+                          @correct="swapLabel(value, index)"
                           v-for="(value, index) in filteredResults"
                       />
                   </tbody>
@@ -223,6 +226,7 @@ export default defineComponent({
           console.log('Total results:')
           console.log(this.allResultsAnalyser)
           this.filteredResults = this.allResultsAnalyser
+          this.unchangedResults = JSON.parse(JSON.stringify(this.allResultsAnalyser))
           const newLabelCounts = this.getLabelCounts(this.resultsAnalyser)
           this.labelCounts = (this.labelCounts.map(function (num, idx) {
             return num + newLabelCounts[idx]
@@ -299,6 +303,9 @@ export default defineComponent({
       }
       this.filteredResults = intermedResults
     },
+    reloadAllWithChanges () {
+      alert('button active')
+    },
     resetVars () {
       this.resultsNotLoaded = true
       this.currentIndex = 0
@@ -309,8 +316,38 @@ export default defineComponent({
       this.filteredResults = []
       this.indexCurrentPDFUploading = 0
     },
-    openCorrectionModal (value: any) {
-      alert('testing...')
+    swapLabel (value: any, index: number) {
+      const currentLabel = value[2]
+      const labels = ['conform', 'niet conform', 'neutraal']
+      const currentIndex = labels.indexOf(currentLabel)
+      const nextIndex = (currentIndex + 1) % 3
+      value[2] = labels[nextIndex]
+      console.log(this.labelsUnchanged())
+      if (this.labelsUnchanged()) {
+        (document.getElementById('reloadButton')! as HTMLButtonElement).disabled = true
+      } else {
+        (document.getElementById('reloadButton')! as HTMLButtonElement).disabled = false
+      }
+    },
+    labelsUnchanged () {
+      const nliLabelsCurrent: string[] = JSON.parse(JSON.stringify(this.allResultsAnalyser.map(function (value, index) { return value[2] })))
+      const nliLabelsOrig: string[] = JSON.parse(JSON.stringify(this.unchangedResults.map(function (value, index) { return value[2] })))
+      console.log(nliLabelsCurrent)
+      console.log(nliLabelsOrig)
+      var isTheSame = true
+      nliLabelsOrig.forEach((num1, index) => {
+        const num2 = nliLabelsCurrent[index]
+        if (num1 !== num2) {
+          console.log(num1)
+          console.log(num2)
+          isTheSame = false
+        }
+      })
+      if (isTheSame) {
+        return true
+      } else {
+        return false
+      }
     },
     async analyseWithStrictness (strictness: string) {
       this.resetVars()
@@ -344,6 +381,7 @@ export default defineComponent({
             for (let i = 0; i < this.resultsAnalyser.length; i++) {
               this.allResultsAnalyser.push(this.resultsAnalyser[i])
             }
+            this.unchangedResults = JSON.parse(JSON.stringify(this.allResultsAnalyser))
             this.filteredResults = this.allResultsAnalyser
             console.log('Total results:')
             console.log(this.allResultsAnalyser)
@@ -435,6 +473,7 @@ export default defineComponent({
     const aanbevelingen: string[] = this.$store.state.aanbevelingen
     const resultsAnalyser: any[] = []
     const allResultsAnalyser: any[] = []
+    const unchangedResults: any[] = []
     const totalCount = 0
     const resultsNotLoaded = ref(true)
     const annotatedFile: File = {} as File
@@ -471,6 +510,7 @@ export default defineComponent({
       showNietConform,
       showNeutraal,
       filteredResults,
+      unchangedResults,
       onlyEnteredAanb
     }
   }

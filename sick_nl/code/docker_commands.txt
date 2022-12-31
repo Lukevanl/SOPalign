@@ -1,0 +1,2 @@
+docker build -f ./code/Dockerfile -t images/img_sop .
+docker run -d --name mycontainer -p 8000:8000 images/img_sop

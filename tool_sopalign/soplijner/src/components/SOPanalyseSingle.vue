@@ -124,7 +124,7 @@
                           v-bind:value="value"
                           v-for="(value, index) in filteredResults"
                           :key="index"
-                          @correct="openCorrectionModal(value)"
+                          @correct="swapLabel(value)"
                           @goto="goToText(index)"
                       />
                   </tbody>
@@ -322,7 +322,7 @@ export default defineComponent({
       const windowAny = (window as any)
       windowAny.find(this.resultsAnalyser[index][0][1], true, true)
     },
-    openCorrectionModal (value: any) {
+    swapLabel (value: any) {
       alert('testing...')
     }
   },

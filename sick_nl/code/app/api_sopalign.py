@@ -2,9 +2,13 @@ import inspect
 import os
 import sys
 from typing import List, Tuple
-from fastapi import FastAPI, UploadFile
+from fastapi import FastAPI, UploadFile, Depends, HTTPException
 from fastapi.responses import FileResponse
 from fastapi.middleware.cors import CORSMiddleware
+from sqlalchemy.orm import Session
+
+import crud, models_sql, schemas
+from database import SessionLocal, engine
 import uvicorn
 import numpy as np
 import time
@@ -23,6 +27,8 @@ from transformers import BertTokenizer, BertForSequenceClassification
 from transformers import RobertaTokenizer, RobertaForSequenceClassification
 
 import fitz
+
+models_sql.Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
 print(torch.__version__)
@@ -45,14 +51,14 @@ class SOPsent(BaseModel):
 class Aanbevelingen(BaseModel):
     aanbevelingen_list: List[Tuple[str, str]]
 
-aanbevelingen = [] #Keeps track of latest entered aanbevelingen
+aanbevelingen = [] #Keeps track of latest entered list of 'aanbevelingen'
 sop_sentences = [] #Keeps track of latest sop (sentences) being analysed
 results_counts = []
 threshold_counts = [0,0,0]
 file_object = None
 file_object_ann = None
 
-#Load models:
+#Load models/tokenizers/database/etc.:
 #------------------------------------#
 #STS
 cosineObject = Cosine(5)
@@ -63,16 +69,34 @@ import os.path as path
 three_up =  path.abspath(path.join(__file__ ,"../../.."))
 #model_mednli_roberta_nl_dl = torch.load( three_up + "/model_data/models/model_MEDNLI_NL_dl_robbert-v2-dutch-base.pt")
 #model_mednli_roberta_nl_dl = torch.load( three_up + "/model_data/models/model_SICK_NL_robbert-v2-dutch-base.pt")
-model_mednli_roberta_nl_dl = torch.load( "model_data/models/model_SICK_PLUS_MEDNLI_NL_dl_robbert-v2-dutch-base.pt")
+model_mednli_roberta_nl_dl = torch.load("model_data/models/model_SICK_PLUS_MEDNLI_NL_dl_robbert-v2-dutch-base.pt")
+
 
 model_mednli_roberta_nl_dl.eval()
-#------------------------------------#
 
 #Load tokenizer
 tokenizer_robertanl = RobertaTokenizer.from_pretrained(roberta_nl)
 
 #Init Pytorch Trainer object (used for easy+fast predictions)
 tuner = BERTFineTuner(roberta_nl, tokenizer_robertanl, model_mednli_roberta_nl_dl, [], [],"", True)
+
+#Function to load database
+def get_db():
+    db = SessionLocal()
+    try:
+        yield db
+    finally:
+        db.close()
+#------------------------------------#
+
+
+
+
+#HTTP REQUESTS:
+
+@app.post("/feedback", response_model=schemas.Feedback)
+def create_user(feedback: schemas.FeedbackCreate, db: Session = Depends(get_db)):
+    return crud.create_feedback(db=db, feedback=feedback)
 
 #Save sop contents
 @app.post("/post_sop")
