@@ -68,9 +68,9 @@
                 id="PDFdisplay"
                 src=""
                 type="application/pdf"
-                height="750px"
-                style="display:none;"
-                width="100%">
+                height="1250px"
+                style="display:none; text-align: center; margin: auto;"
+                width="95%">
               <div v-if="resultsNotLoaded">
                 <h4 style="text-align: center; color:gray; left: 50px; margin-top: 30px; opacity: 0.5;">Please wait...</h4>
                 <font-awesome-icon id="loaderBig" style="text-align: center; left: 50px; margin-top: 30px; margin-bottom: 30px;" icon="spinner" size="4x" spin/>
