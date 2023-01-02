@@ -304,7 +304,7 @@ export default defineComponent({
       this.filteredResults = intermedResults
     },
     reloadAllWithChanges () {
-      alert('button active')
+      this.saveChangesToDatabase()
     },
     resetVars () {
       this.resultsNotLoaded = true
@@ -332,22 +332,32 @@ export default defineComponent({
     labelsUnchanged () {
       const nliLabelsCurrent: string[] = JSON.parse(JSON.stringify(this.allResultsAnalyser.map(function (value, index) { return value[2] })))
       const nliLabelsOrig: string[] = JSON.parse(JSON.stringify(this.unchangedResults.map(function (value, index) { return value[2] })))
-      console.log(nliLabelsCurrent)
-      console.log(nliLabelsOrig)
       var isTheSame = true
       nliLabelsOrig.forEach((num1, index) => {
         const num2 = nliLabelsCurrent[index]
         if (num1 !== num2) {
-          console.log(num1)
-          console.log(num2)
           isTheSame = false
         }
       })
-      if (isTheSame) {
-        return true
-      } else {
-        return false
-      }
+      return isTheSame
+    },
+    async saveChangesToDatabase () {
+      const nliLabelsCurrent: string[] = JSON.parse(JSON.stringify(this.allResultsAnalyser.map(function (value, index) { return value[2] })))
+      const nliLabelsOrig: string[] = JSON.parse(JSON.stringify(this.unchangedResults.map(function (value, index) { return value[2] })))
+      nliLabelsOrig.forEach(async (origLabel, index) => {
+        const newLabel = nliLabelsCurrent[index]
+        if (origLabel !== newLabel) {
+          console.log('change found, saving to database')
+          await fetch('http://127.0.0.1:8000/feedback', {
+            method: 'POST', // *GET, POST, PUT, DELETE, etc.
+            mode: 'cors', // no-cors, *cors, same-origin
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ aanbeveling: this.allResultsAnalyser[index][0][0], aanbeveling_id: this.allResultsAnalyser[index][1], sop_passage: this.allResultsAnalyser[index][0][1], nli_label: newLabel }) // body data type must match "Content-Type" header
+          })
+        }
+      })
     },
     async analyseWithStrictness (strictness: string) {
       this.resetVars()
