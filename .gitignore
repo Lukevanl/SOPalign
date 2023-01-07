@@ -1,4 +1,5 @@
 # Byte-compiled / optimized / DLL files
 __pycache__/
 sick_nl/model_data/models/
-
+sick_nl/.metals/
+sick_nl/.vscode/
