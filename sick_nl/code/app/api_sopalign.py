@@ -2,7 +2,7 @@ import inspect
 import os
 import sys
 from typing import List, Tuple
-from fastapi import FastAPI, UploadFile, Depends, HTTPException
+from fastapi import FastAPI, UploadFile, Depends, HTTPException, Query
 from fastapi.responses import FileResponse
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
@@ -128,6 +128,19 @@ def get_annot_pdf():
     global file_object_ann
     return file_object_ann
 
+@app.get("/get_and_ann_pdf")
+async def get_and_ann_pdf(sop_sentences: List[str] = Query(None), aanbevelingen: List[str] = Query(None), aanbeveling_ids: List[str] = Query(None), labels: List[str] = Query(None), probabilities: List[str] = Query(None)):
+    #print(f"sop: {sop_sentences}, aanb: {aanbevelingen}, id: {aanbeveling_ids}, lab: {labels}, prob: {probabilities}")
+    #print(f"sop: {type(sop_sentences)}, aanb: {type(aanbevelingen)}, id: {type(aanbeveling_ids)}, lab: {type(labels)}, prob: {type(probabilities)}")
+    #pdf = await highlight_pdf([[sop_sentence] for sop_sentence in sop_sentences], 
+    #                          [[aanbeveling] for aanbeveling in aanbevelingen], 
+    #                          [[aanbeveling_id] for aanbeveling_id in aanbeveling_ids], 
+    #                          [[label] for label in labels], 
+    #                          probabilities)
+    print(len(sop_sentences), len(aanbevelingen), len(aanbeveling_ids), len(labels), len(probabilities))
+    pdf = await highlight_pdf(sop_sentences[0].split(','), aanbevelingen[0].split(','), aanbeveling_ids[0].split(','), labels[0].split(','), [float(prob) for prob in probabilities[0].split(',')], rerun=True)
+    return pdf
+
 #Main loop, executes STS + NLI steps, returns results and highlights them in PDF.
 @app.get("/get_sentence_pairs")
 async def get_sentence_pairs(chosen_strictness: str = "Normaal"):
@@ -190,12 +203,17 @@ async def get_sentence_pairs(chosen_strictness: str = "Normaal"):
     results_zipped = list(zip(sentence_pairs, identifiers, predictions_string, probabilities))
     #print(list(results_zipped))
     #----------------------------------------------------------#
+    print('important')
+    print(sop_sents_extr, aanb_extr, identifiers, predictions_string, probabilities)
     pdf = await highlight_pdf(sop_sents_extr, aanb_extr, identifiers, predictions_string, probabilities)
     file_object_ann = pdf
     print(" -----------------------  GETS HERE 10 --------------------------")
     return {"results": results_zipped, "sts_counts": [total_count, above_cosine_threshold_count, above_both_threshold_count], "time": (time.time() - start_time) }
 
-async def highlight_pdf(sop_sentences, aanbevelingen, aanbeveling_ids, labels, probabilities):
+async def highlight_pdf(sop_sentences, aanbevelingen, aanbeveling_ids, labels, probabilities, rerun=False):
+    if rerun:
+        sop_sentences = [sop_sentence.replace('$#$', ',') for sop_sentence in sop_sentences]
+        aanbevelingen = [aanbeveling.replace('$#$', ',') for aanbeveling in aanbevelingen]
     print(" -----------------------  GETS HERE 9 --------------------------")
     bytes = await file_object.read()
     doc = fitz.open(stream=bytes)
@@ -214,7 +232,7 @@ async def highlight_pdf(sop_sentences, aanbevelingen, aanbeveling_ids, labels, p
             ids_for_sop = group_for_sentence['ID'].tolist()
             labels_for_sop = group_for_sentence['LABEL'].tolist()
             probabilities_for_sop = group_for_sentence['PROBS'].tolist()
-            annot_text = generate_annotation_text(aanbevelingen_for_sop, ids_for_sop, labels_for_sop, probabilities_for_sop)
+            annot_text = generate_annotation_text(aanbevelingen_for_sop, ids_for_sop, labels_for_sop, probabilities_for_sop, rerun)
             for (i,inst) in enumerate(found_matches):
                 text_highlight = page.add_highlight_annot(inst)
                 text_highlight.update()
@@ -233,14 +251,17 @@ async def highlight_pdf(sop_sentences, aanbevelingen, aanbeveling_ids, labels, p
     pdf = FileResponse(output_path, filename="ann_results.pdf", headers=headers)
     return pdf
 
-def generate_annotation_text(aanbevelingen, aanbeveling_ids, labels, probabilities):
+def generate_annotation_text(aanbevelingen, aanbeveling_ids, labels, probabilities, rerun=False):
     label_to_index = {"niet conform": 0, "neutraal": 1, "conform": 2}
     text_header = f"Aantal gematchte aanbevelingen: {len(set(aanbeveling_ids))}\n\n"
     text_body = f""
     for (index, (aanbeveling, id, label, probability)) in enumerate(zip(aanbevelingen, aanbeveling_ids, labels, probabilities)):
         if (id in aanbeveling_ids[:index]):
             continue
-        probability_for_label = probability[label_to_index[label]] * 100
+        if (not rerun):
+            probability_for_label = probability[label_to_index[label]] * 100
+        else:
+            probability_for_label = probability * 100
         text_body += f"Aanbeveling {index+1}: \n{aanbeveling} (ID={id})\nLabel is {label} t.o.v. de sop passage met {probability_for_label:.2f}% kans\n" 
     return text_header + text_body
 

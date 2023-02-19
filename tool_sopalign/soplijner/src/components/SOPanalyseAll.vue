@@ -303,8 +303,82 @@ export default defineComponent({
       }
       this.filteredResults = intermedResults
     },
-    reloadAllWithChanges () {
-      this.saveChangesToDatabase()
+    async reloadAllWithChanges () {
+      await this.saveChangesToDatabase()
+      await this.reloadPDFsWithChanges()
+    },
+    async saveChangesToDatabase () {
+      const nliLabelsCurrent: string[] = JSON.parse(JSON.stringify(this.allResultsAnalyser.map(function (value, index) { return value[2] })))
+      const nliLabelsOrig: string[] = JSON.parse(JSON.stringify(this.unchangedResults.map(function (value, index) { return value[2] })))
+      nliLabelsOrig.forEach(async (origLabel, index) => {
+        const newLabel = nliLabelsCurrent[index]
+        if (origLabel !== newLabel) {
+          console.log('change found, saving to database')
+          await fetch('http://127.0.0.1:8000/feedback', {
+            method: 'POST', // *GET, POST, PUT, DELETE, etc.
+            mode: 'cors', // no-cors, *cors, same-origin
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ aanbeveling: this.allResultsAnalyser[index][0][0], aanbeveling_id: this.allResultsAnalyser[index][1], sop_passage: this.allResultsAnalyser[index][0][1], nli_label: newLabel }) // body data type must match "Content-Type" header
+          })
+        }
+      })
+    },
+    async reloadPDFsWithChanges () {
+      const groupedMap = this.allResultsAnalyser.reduce(
+        (entryMap, e) => entryMap.set(e[4], [...entryMap.get(e[4]) || [], e]),
+        new Map()
+      )
+      console.log(groupedMap)
+      console.log('importaaaaaaaaaaaaaaaaaaaaaant')
+      console.log(this.allResultsAnalyser)
+      const resultsGrouped: any[] = Array.from(groupedMap.entries())
+      console.log(resultsGrouped)
+      const nrOfFiles = this.fileContents.length
+      this.resultsNotLoaded = true
+      this.currentIndex = 0
+      for (let index = 0; index < nrOfFiles; index++) {
+        const formData = new FormData()
+        formData.append('file', this.fileObjects[index])
+        await fetch('http://127.0.0.1:8000/post_pdf', {
+          method: 'POST', // *GET, POST, PUT, DELETE, etc.
+          mode: 'cors', // no-cors, *cors, same-origin
+          body: formData // body data type must match "Content-Type" header
+        })
+        console.log(resultsGrouped[index][1].map((x: any[]) => x[0][1]), resultsGrouped[index][1].map((x: any[]) => x[0][0]), resultsGrouped[index][1].map((x: any[]) => x[1]), resultsGrouped[index][1].map((x: any[]) => x[2]), resultsGrouped[index][1].map((x: any[]) => Math.max(...x[3])))
+        await fetch('http://127.0.0.1:8000/get_and_ann_pdf?' + new URLSearchParams({
+          sop_sentences: resultsGrouped[index][1].map((x: any[]) => x[0][1].replace(new RegExp(',', 'g'), '$#$')),
+          aanbevelingen: resultsGrouped[index][1].map((x: any[]) => x[0][0].replace(new RegExp(',', 'g'), '$#$')),
+          aanbeveling_ids: resultsGrouped[index][1].map((x: any[]) => x[1]),
+          labels: resultsGrouped[index][1].map((x: any[]) => x[2]),
+          probabilities: resultsGrouped[index][1].map((x: any[]) => Math.max(...x[3]))
+        }),
+        {
+          method: 'GET', // *GET, POST, PUT, DELETE, etc.
+          mode: 'cors', // no-cors, *cors, same-origin
+          headers: {
+            'Content-Type': 'application/pdf'
+          }
+        })
+          .then(res => {
+            return res.blob()
+          })
+          .then(blob => {
+            var url = window.URL.createObjectURL(blob)
+            console.log('Found url in fetch: ' + url)
+            this.fileURLs[index] = url
+          })
+        this.indexCurrentPDFUploading += 1
+        this.makeProgress(this.indexCurrentPDFUploading, nrOfFiles)
+        const newLabelCounts = this.getLabelCounts(this.allResultsAnalyser)
+        this.labelCounts = (this.labelCounts.map(function (num, idx) {
+          return num + newLabelCounts[idx]
+        }) as [number, number, number])
+      }
+      this.resultsNotLoaded = false
+      this.goToNext()
+      this.goToPrevious()
     },
     resetVars () {
       this.resultsNotLoaded = true
@@ -340,24 +414,6 @@ export default defineComponent({
         }
       })
       return isTheSame
-    },
-    async saveChangesToDatabase () {
-      const nliLabelsCurrent: string[] = JSON.parse(JSON.stringify(this.allResultsAnalyser.map(function (value, index) { return value[2] })))
-      const nliLabelsOrig: string[] = JSON.parse(JSON.stringify(this.unchangedResults.map(function (value, index) { return value[2] })))
-      nliLabelsOrig.forEach(async (origLabel, index) => {
-        const newLabel = nliLabelsCurrent[index]
-        if (origLabel !== newLabel) {
-          console.log('change found, saving to database')
-          await fetch('http://127.0.0.1:8000/feedback', {
-            method: 'POST', // *GET, POST, PUT, DELETE, etc.
-            mode: 'cors', // no-cors, *cors, same-origin
-            headers: {
-              'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ aanbeveling: this.allResultsAnalyser[index][0][0], aanbeveling_id: this.allResultsAnalyser[index][1], sop_passage: this.allResultsAnalyser[index][0][1], nli_label: newLabel }) // body data type must match "Content-Type" header
-          })
-        }
-      })
     },
     async analyseWithStrictness (strictness: string) {
       this.resetVars()
@@ -538,3 +594,11 @@ $newbuttoncolor: $rumc-light;
 }
 
 </style>
+
+function x(x: any, arg1: any, arg2: any): any {
+  throw new Error('Function not implemented.')
+}
+
+function x(x: any, arg1: any, arg2: any): any {
+  throw new Error('Function not implemented.')
+}

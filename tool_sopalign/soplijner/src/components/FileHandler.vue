@@ -5,7 +5,6 @@
           <thead style="text-align: center; background-color: #E0F2F2;">
               <tr class="table_head">
               <th scope="col">Filename</th>
-              <th scope="col">Analyseer</th>
               <th scope="col">Verwijder</th>
               </tr>
           </thead>
@@ -16,7 +15,6 @@
                   v-for="(fileName, index) in fileNames"
                   :key="index"
                   @remove="removePDFAtIndex(index)"
-                  @analyse="openAnalyser(index)"
               />
           </tbody>
         </table>
@@ -102,8 +100,6 @@ export default defineComponent({
         // Concat sentences if most likely wrongly separated (checked by below conditions)
         // Attempt 1:
         if (((!('.-?!"·o'.includes(sentence[sentence.length - 1]))) || (sentence.slice(-3) === 'dr.')) && (i + 1 !== sentences.length)) {
-          // console.log(sentence[-1])
-          // console.log((!('.:?!'.includes(sentence[-1]))) || (sentence.slice(-3) === 'dr.'))
           sentences[i + 1] = cleanedSentence + ' ' + sentences[i + 1].trim()
           continue
         }

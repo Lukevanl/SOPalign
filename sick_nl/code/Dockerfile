@@ -148,7 +148,7 @@ RUN pip3 install --no-cache-dir --upgrade -r /code_docker/req_from_conda.txt
 RUN pip3 install --no-cache-dir psycopg2-binary 
 
 #
-RUN pip3 --timeout=500 --no-cache-dir install torch==1.13.1+cu117 -f https://download.pytorch.org/whl/cu117/torch_stable.html
+RUN pip3 --timeout=500 --no-cache-dir install torch==1.11.0+cu113 -f https://download.pytorch.org/whl/cu113/torch_stable.html
 
 # 
 COPY ./code/app /code_docker

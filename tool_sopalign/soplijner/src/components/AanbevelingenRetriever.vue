@@ -115,12 +115,11 @@ import AanbevelingenRow from './AanbevelingenRow.vue'
 
 function tsvToArray (str: string, delimiter = '\t') {
   const headers: string[] = str.slice(0, str.indexOf('\n') - 1).split(delimiter)
-  for (var i = 0; i < headers.length; i++) {
-    continue
-  }
   console.log(headers)
   const rows = str.slice(str.indexOf('\n') + 1).split('\n')
+  console.log(rows)
   const arr = rows.map(function (row) {
+    console.log(row)
     const values: string[] = row.split(delimiter)
     const el = headers.reduce(function (object: any, header, index) {
       object[header] = values[index].replace('\r', '')
@@ -135,13 +134,6 @@ function tsvToArray (str: string, delimiter = '\t') {
 export default defineComponent({
   name: 'AanbevelingenRetriever',
   components: { AanbevelingenRow },
-  mounted: async function () {
-    await fetch('http://127.0.0.1:8000/get_aanbevelingen')
-      .then(res => res.json())
-      .then(data => {
-        this.aanbevelingen = data.aanbevelingen
-      })
-  },
   methods: {
     saveChanges () {
       this.$store.commit('changeAanbevelingen', this.aanbevelingen)
@@ -177,7 +169,7 @@ export default defineComponent({
       const file = fileElem.files![0]
       const reader = new FileReader()
       var comp: any = null
-      // Assign state to var so aanbevelinge can be changed inside onload
+      // Assign state to var so aanbevelingen can be changed inside onload
       comp = this
       var data: any[] = []
       reader.onload = function (event) {
