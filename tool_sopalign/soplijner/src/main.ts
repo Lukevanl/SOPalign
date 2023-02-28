@@ -5,7 +5,7 @@ import { createStore } from 'vuex'
 import App from './App.vue'
 import router from './router'
 import { library } from '@fortawesome/fontawesome-svg-core'
-import { faTrashCan, faPenToSquare, faSpinner, faRotate, faQrcode, faPlus, faMagnifyingGlass, faMagnifyingGlassChart, faLocationArrow, faGlobe, faWandMagicSparkles } from '@fortawesome/free-solid-svg-icons'
+import { faTrashCan, faPenToSquare, faSpinner, faRotate, faQrcode, faPlus, faMagnifyingGlass, faMagnifyingGlassChart, faLocationArrow, faGlobe, faWandMagicSparkles, faUpload } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import VueSlider from 'vue-slider-component'
 import 'vue-slider-component/theme/default.css'
@@ -45,7 +45,7 @@ const store = createStore({
   }
 })
 
-library.add(faTrashCan, faPenToSquare, faRotate, faQrcode, faPlus, faMagnifyingGlass, faMagnifyingGlassChart, faLocationArrow, faSpinner, faGlobe, faWandMagicSparkles)
+library.add(faTrashCan, faPenToSquare, faRotate, faQrcode, faPlus, faMagnifyingGlass, faMagnifyingGlassChart, faLocationArrow, faSpinner, faGlobe, faWandMagicSparkles, faUpload)
 const app = createApp(App).component('font-awesome-icon', FontAwesomeIcon)
 app.component('VueSlider', VueSlider)
 app.use(router)

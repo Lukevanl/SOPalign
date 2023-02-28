@@ -16,3 +16,18 @@ class Feedback(FeedbackBase):
 
     class Config:
         orm_mode = True
+
+
+class RichtlijnBase(BaseModel):
+    aanbevelingen : list
+    aanbevelingen_ids : list
+    name: str
+
+class RichtlijnCreate(RichtlijnBase):
+    pass
+
+
+class Richtlijn(RichtlijnBase):
+
+    class Config:
+        orm_mode = True

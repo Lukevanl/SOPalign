@@ -330,14 +330,12 @@ export default defineComponent({
         (entryMap, e) => entryMap.set(e[4], [...entryMap.get(e[4]) || [], e]),
         new Map()
       )
-      console.log(groupedMap)
-      console.log('importaaaaaaaaaaaaaaaaaaaaaant')
-      console.log(this.allResultsAnalyser)
       const resultsGrouped: any[] = Array.from(groupedMap.entries())
       console.log(resultsGrouped)
       const nrOfFiles = this.fileContents.length
       this.resultsNotLoaded = true
       this.currentIndex = 0
+      this.indexCurrentPDFUploading = 0
       for (let index = 0; index < nrOfFiles; index++) {
         const formData = new FormData()
         formData.append('file', this.fileObjects[index])
@@ -376,8 +374,10 @@ export default defineComponent({
           return num + newLabelCounts[idx]
         }) as [number, number, number])
       }
+      // Done, reload pdf.
       this.resultsNotLoaded = false
-      this.goToNext()
+      document.getElementById('PDFdisplay')!.style.display = 'block'
+      this.renderPDF(this.currentIndex)
       this.goToPrevious()
     },
     resetVars () {

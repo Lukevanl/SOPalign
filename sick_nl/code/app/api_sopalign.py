@@ -95,8 +95,29 @@ def get_db():
 #HTTP REQUESTS:
 
 @app.post("/feedback", response_model=schemas.Feedback)
-def create_user(feedback: schemas.FeedbackCreate, db: Session = Depends(get_db)):
+def create_feedback(feedback: schemas.FeedbackCreate, db: Session = Depends(get_db)):
     return crud.create_feedback(db=db, feedback=feedback)
+
+@app.post("/richtlijn_post", response_model=schemas.Richtlijn)
+def create_richtlijn(richtlijn: schemas.RichtlijnCreate, db: Session = Depends(get_db)):
+    return crud.create_richtlijn(db=db, richtlijn=richtlijn)
+
+@app.get("/rem_richtlijn/{name}", response_model=list[schemas.Richtlijn])
+def remove_richtlijn_by_name(name: str, db: Session = Depends(get_db)):
+    richtlijnen = crud.remove_richtlijn_by_name(db, name=name)
+    return richtlijnen
+
+@app.get("/richtlijn/", response_model=list[schemas.Richtlijn])
+def read_richtlijnen(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
+    richtlijnen = crud.get_richtlijnen(db, skip=skip, limit=limit)
+    return richtlijnen
+
+@app.get("/richtlijn/{name}", response_model=schemas.Richtlijn)
+def read_richtlijn(name: str, db: Session = Depends(get_db)):
+    db_richtlijn = crud.get_richtlijn_by_name(db, name=name)
+    if db_richtlijn is None:
+        raise HTTPException(status_code=404, detail="Richtlijn not found")
+    return db_richtlijn
 
 #Save sop contents
 @app.post("/post_sop")
@@ -144,70 +165,74 @@ async def get_and_ann_pdf(sop_sentences: List[str] = Query(None), aanbevelingen:
 #Main loop, executes STS + NLI steps, returns results and highlights them in PDF.
 @app.get("/get_sentence_pairs")
 async def get_sentence_pairs(chosen_strictness: str = "Normaal"):
-    cosine_threshold, sts_threshold = mapStrictnessToThresholds(chosen_strictness)
-    start_time = time.time()
-    total_count = 0
-    sentence_pairs = []
-    identifiers = []
-    above_cosine_threshold_count = 0
-    above_both_threshold_count = 0
-    #Loop that calculates STS + Cosine scores and filters out sentences considered irrelevant (below thereshold)
-    for sop_sent in sop_sentences:
-        for aanbeveling in aanbevelingen:
-            total_count += 1
-            score = calculate_cosine_similarity(cosineObject, sop_sent, aanbeveling[0])
-            #print(score, end= " | ")
-            if(score > cosine_threshold):
-                above_cosine_threshold_count += 1
-                sts_score = get_sts_score(sop_sent, aanbeveling[0], sts_model)
-                #print(sts_score)
-                if(sts_score > sts_threshold):
-                    above_both_threshold_count += 1
-                    sentence_pairs.append([aanbeveling[0], sop_sent])
-                    identifiers.append(aanbeveling[1])
-                    print(f"{score} for sentence \n {sop_sent} \n -------compared to------- \n {aanbeveling[0]}\n")
-                    print(f"STS score: {sts_score}\n\n")
-    threshold_counts[0] += total_count 
-    threshold_counts[1] += above_cosine_threshold_count
-    threshold_counts[2] += above_both_threshold_count
-    print(threshold_counts)
-    #     Make predictions on the filtered sentence pairs:     #
-    #----------------------------------------------------------#
-    # Add random evaluation data so we can reuse code from dev set evaluation for predictions
-    sop_sents_extr = [i[1] for i in sentence_pairs]
-    aanb_extr = [i[0] for i in sentence_pairs]
-    sentence_pairs_w_labels = [i + ["NEUTRAL", 0] for i in sentence_pairs]
-    global file_object_ann
-    results_counts.append(above_both_threshold_count)
-    print(results_counts)
-    #If NO matching pairs found:
-    if(above_both_threshold_count == 0):
-        bytes = await file_object.read()
-        doc = fitz.open(stream=bytes)
-        output_path = "output.pdf"
-        doc.save(output_path, garbage=4)
-        #Inside FileResponse object so it can be sent back to frontend
-        headers = {'Access-Control-Expose-Headers': 'Content-Disposition'}
-        pdf = FileResponse(output_path, filename="ann_results.pdf", headers=headers)
+    with open("file.txt","a+", encoding="UTF-8") as f:
+        cosine_threshold, sts_threshold = mapStrictnessToThresholds(chosen_strictness)
+        start_time = time.time()
+        total_count = 0
+        sentence_pairs = []
+        identifiers = []
+        above_cosine_threshold_count = 0
+        above_both_threshold_count = 0
+        #Loop that calculates STS + Cosine scores and filters out sentences considered irrelevant (below thereshold)
+        for sop_sent in sop_sentences:
+            for aanbeveling in aanbevelingen:
+                total_count += 1
+                score = calculate_cosine_similarity(cosineObject, sop_sent, aanbeveling[0])
+                f.write(f"sop:{sop_sent} aanb: {aanbeveling} \n cos_score = {score}")
+                #print(score, end= " | ")
+                if(score > cosine_threshold):
+                    above_cosine_threshold_count += 1
+                    sts_score = get_sts_score(sop_sent, aanbeveling[0], sts_model)
+                    f.write(f", sts_score = {sts_score}")
+                    #print(sts_score)
+                    if(sts_score > sts_threshold):
+                        above_both_threshold_count += 1
+                        sentence_pairs.append([aanbeveling[0], sop_sent])
+                        identifiers.append(aanbeveling[1])
+                        print(f"{score} for sentence \n {sop_sent} \n -------compared to------- \n {aanbeveling[0]}\n")
+                        print(f"STS score: {sts_score}\n\n")
+                f.write("\n")
+        threshold_counts[0] += total_count 
+        threshold_counts[1] += above_cosine_threshold_count
+        threshold_counts[2] += above_both_threshold_count
+        print(threshold_counts)
+        #     Make predictions on the filtered sentence pairs:     #
+        #----------------------------------------------------------#
+        # Add random evaluation data so we can reuse code from dev set evaluation for predictions
+        sop_sents_extr = [i[1] for i in sentence_pairs]
+        aanb_extr = [i[0] for i in sentence_pairs]
+        sentence_pairs_w_labels = [i + ["NEUTRAL", 0] for i in sentence_pairs]
+        global file_object_ann
+        results_counts.append(above_both_threshold_count)
+        print(results_counts)
+        #If NO matching pairs found:
+        if(above_both_threshold_count == 0):
+            bytes = await file_object.read()
+            doc = fitz.open(stream=bytes)
+            output_path = "output.pdf"
+            doc.save(output_path, garbage=4)
+            #Inside FileResponse object so it can be sent back to frontend
+            headers = {'Access-Control-Expose-Headers': 'Content-Disposition'}
+            pdf = FileResponse(output_path, filename="ann_results.pdf", headers=headers)
+            file_object_ann = pdf
+            return {"results": [], "sts_counts": [total_count, above_cosine_threshold_count, above_both_threshold_count], "time": (time.time() - start_time) }
+        #If matching pairs found:
+        print(" -----------------------  GETS HERE 8 --------------------------")
+        test_set_sopalign = BERT_DATASET(sentence_pairs_w_labels, tokenizer_robertanl)
+        results = tuner.predict(test_set_sopalign).metrics
+        predictions = results["test_predictions"]
+        probabilities = results["test_probabilities"]
+        labels = ["niet conform", "neutraal", "conform"]
+        predictions_string = [labels[i] for i in predictions]
+        #print_results(sentence_pairs, predictions_string, probabilities, identifiers)
+        results_zipped = list(zip(sentence_pairs, identifiers, predictions_string, probabilities))
+        #print(list(results_zipped))
+        #----------------------------------------------------------#
+        print('important')
+        print(sop_sents_extr, aanb_extr, identifiers, predictions_string, probabilities)
+        pdf = await highlight_pdf(sop_sents_extr, aanb_extr, identifiers, predictions_string, probabilities)
         file_object_ann = pdf
-        return {"results": [], "sts_counts": [total_count, above_cosine_threshold_count, above_both_threshold_count], "time": (time.time() - start_time) }
-    #If matching pairs found:
-    print(" -----------------------  GETS HERE 8 --------------------------")
-    test_set_sopalign = BERT_DATASET(sentence_pairs_w_labels, tokenizer_robertanl)
-    results = tuner.predict(test_set_sopalign).metrics
-    predictions = results["test_predictions"]
-    probabilities = results["test_probabilities"]
-    labels = ["niet conform", "neutraal", "conform"]
-    predictions_string = [labels[i] for i in predictions]
-    #print_results(sentence_pairs, predictions_string, probabilities, identifiers)
-    results_zipped = list(zip(sentence_pairs, identifiers, predictions_string, probabilities))
-    #print(list(results_zipped))
-    #----------------------------------------------------------#
-    print('important')
-    print(sop_sents_extr, aanb_extr, identifiers, predictions_string, probabilities)
-    pdf = await highlight_pdf(sop_sents_extr, aanb_extr, identifiers, predictions_string, probabilities)
-    file_object_ann = pdf
-    print(" -----------------------  GETS HERE 10 --------------------------")
+        print(" -----------------------  GETS HERE 10 --------------------------")
     return {"results": results_zipped, "sts_counts": [total_count, above_cosine_threshold_count, above_both_threshold_count], "time": (time.time() - start_time) }
 
 async def highlight_pdf(sop_sentences, aanbevelingen, aanbeveling_ids, labels, probabilities, rerun=False):
@@ -271,7 +296,8 @@ def print_results(sentence_pairs, pred, prob, id):
         print(f"Predicted label: {pred[i]}\nFor aanbeveling: \n{pair[0]} \n with ID: {id[i]} AND sop sentence: \n{pair[1]}\n\n\n")
 
 def mapStrictnessToThresholds(chosenStrictness):
-    strictnessToThresholds = {"Erg Mild": [0.175, 0.625], "Mild": [0.20, 0.675], "Normaal": [0.225, 0.69], "Strikt": [0.2375, 0.73], "Erg Strikt": [0.25, 0.76]}
+    #strictnessToThresholds = {"Erg Mild": [0.175, 0.625], "Mild": [0.20, 0.675], "Normaal": , "Strikt": , "Erg Strikt": [0.25, 0.76]} #old values
+    strictnessToThresholds = {"Erg Mild": [0.16, 0.600], "Mild": [0.175, 0.63], "Normaal": [0.20, 0.675], "Strikt": [0.225, 0.69], "Erg Strikt": [0.2375, 0.72]}
     cosine, sts = strictnessToThresholds[chosenStrictness]
     return cosine, sts
 
