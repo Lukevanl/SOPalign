@@ -6,6 +6,7 @@
     <div>
       <div class="nav">
         <div> <router-link class="router-link" tag= "li" :to="{name: 'Aboutpage'}">About</router-link> </div>
+        <div> <router-link class="router-link" tag= "li" :to="{name: 'Tutorialpage'}">Tutorial</router-link> </div>
         <div> <router-link class="router-link" tag= "li" :to="{name: 'Toolpage'}">Tool</router-link> </div>
       </div>
       <router-view/>

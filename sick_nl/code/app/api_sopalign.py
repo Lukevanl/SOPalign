@@ -108,7 +108,7 @@ def remove_richtlijn_by_name(name: str, db: Session = Depends(get_db)):
     return richtlijnen
 
 @app.get("/richtlijn/", response_model=list[schemas.Richtlijn])
-def read_richtlijnen(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
+def read_richtlijnen(skip: int = 0, limit: int = 100000, db: Session = Depends(get_db)):
     richtlijnen = crud.get_richtlijnen(db, skip=skip, limit=limit)
     return richtlijnen
 

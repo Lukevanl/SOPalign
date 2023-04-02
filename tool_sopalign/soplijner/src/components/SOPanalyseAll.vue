@@ -336,6 +336,7 @@ export default defineComponent({
       this.resultsNotLoaded = true
       this.currentIndex = 0
       this.indexCurrentPDFUploading = 0
+      this.labelCounts = [0, 0, 0]
       for (let index = 0; index < nrOfFiles; index++) {
         const formData = new FormData()
         formData.append('file', this.fileObjects[index])
@@ -367,13 +368,13 @@ export default defineComponent({
             console.log('Found url in fetch: ' + url)
             this.fileURLs[index] = url
           })
-        this.indexCurrentPDFUploading += 1
-        this.makeProgress(this.indexCurrentPDFUploading, nrOfFiles)
-        const newLabelCounts = this.getLabelCounts(this.allResultsAnalyser)
-        this.labelCounts = (this.labelCounts.map(function (num, idx) {
-          return num + newLabelCounts[idx]
-        }) as [number, number, number])
       }
+      this.indexCurrentPDFUploading += 1
+      this.makeProgress(this.indexCurrentPDFUploading, nrOfFiles)
+      const newLabelCounts = this.getLabelCounts(this.allResultsAnalyser)
+      this.labelCounts = (this.labelCounts.map(function (num, idx) {
+        return num + newLabelCounts[idx]
+      }) as [number, number, number])
       // Done, reload pdf.
       this.resultsNotLoaded = false
       document.getElementById('PDFdisplay')!.style.display = 'block'

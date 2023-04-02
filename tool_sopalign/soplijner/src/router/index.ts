@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router'
 import Home from '../views/Home.vue'
 import About from '../views/About.vue'
+import Tutorial from '../views/Tutorial.vue'
 import SOPanalyseSingle from '@/components/SOPanalyseSingle.vue'
 import SOPanalyseAll from '@/components/SOPanalyseAll.vue'
 
@@ -25,6 +26,11 @@ const routes: Array<RouteRecordRaw> = [
     path: '/about',
     name: 'Aboutpage',
     component: About
+  },
+  {
+    path: '/tutorial',
+    name: 'Tutorialpage',
+    component: Tutorial
   }
 ]
 

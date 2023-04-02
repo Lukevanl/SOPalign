@@ -21,12 +21,12 @@ def remove_richtlijn_by_name(db: Session, name: str):
 def get_richtlijn_by_name(db: Session, name: str):
     return db.query(models_sql.Richtlijn).filter(models_sql.Richtlijn.name == name).first()
 
-def get_richtlijnen(db: Session, skip: int = 0, limit: int = 200):
+def get_richtlijnen(db: Session, skip: int = 0, limit: int = 2000000):
     return db.query(models_sql.Richtlijn).offset(skip).limit(limit).all()
     
 def create_richtlijn(db: Session, richtlijn: schemas.RichtlijnCreate):
-    db_richtlijn = models_sql.Richtlijn(name = richtlijn.name, aanbevelingen=richtlijn.aanbevelingen, aanbevelingen_ids=richtlijn.aanbevelingen_ids)
-    db.add(db_richtlijn)
+    db_richtlijn_row = models_sql.Richtlijn(name = richtlijn.name, aanbeveling=richtlijn.aanbeveling, aanbeveling_id=richtlijn.aanbeveling_id)
+    db.add(db_richtlijn_row)
     db.commit()
-    db.refresh(db_richtlijn)
-    return db_richtlijn
+    db.refresh(db_richtlijn_row)
+    return db_richtlijn_row

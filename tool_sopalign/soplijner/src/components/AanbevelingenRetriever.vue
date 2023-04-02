@@ -1,4 +1,5 @@
 <template>
+  <button type="button" class="btn btn-primary" @click="openAddingRichtlijnModal()" style="color:white; margin-bottom: 10px;">Sla richtlijn op</button>
   <table class="table table-bordered">
           <thead style="text-align: center; background-color: #E0F2F2;">
               <tr class="table_head">
@@ -18,7 +19,7 @@
                   @edit="openEditingModal(index)"
               />
               <tr>
-                <td align="center" colspan="4"><button style='background-color: inherit; border : 0; color: #96D2DA;;' @click="openAddingModal" class="table-button-plus" data-bs-toggle="tooltip" title="Voeg aanbeveling toe"><font-awesome-icon id="table-icon-plus" icon="plus" size="2x" /></button></td>
+                <td align="center" colspan="4"><button style='background-color: inherit; border : 0; color: #96D2DA;' @click="openAddingModal" class="table-button-plus" data-bs-toggle="tooltip" title="Voeg aanbeveling toe"><font-awesome-icon id="table-icon-plus" icon="plus" size="2x" /></button></td>
               </tr>
           </tbody>
     </table>
@@ -41,7 +42,6 @@
               />
           </tbody>
     </table>
-    <button type="button" class="btn btn-primary" @click="openAddingRichtlijnModal()" style="color:white;">Sla richtlijn op</button>
     <h3>Upload aanbevelingen vanaf tsv bestand</h3>
     <form id="csvForm">
     <input type="file" accept=".tsv" id="aanbevelingenFile"/>
@@ -198,15 +198,21 @@ export default defineComponent({
       .then(data => {
         results = data
       })
+    console.log(results)
     for (let i = 0; i < results.length; i++) {
-      const aanb = results[i].aanbevelingen
-      const ids = results[i].aanbevelingen_ids
-      const zipped: [string, string][] = aanb.map(function (e: any, i: any) {
-        return [e, ids[i]]
-      })
+      const aanb = results[i].aanbeveling
+      const id = results[i].aanbeveling_id
+      const name = results[i].name
+      const zipped: [string, string, string] = [aanb, id, name]
+      // console.log(zipped)
       this.richtlijnenList.push(zipped)
-      this.names.push(results[i].name)
     }
+    this.names = this.richtlijnenList.map(function (e: any, i: any) {
+      return e[2]
+    })
+    this.names = [...new Set(this.names)]
+    console.log(this.names)
+    console.log(this.richtlijnenList)
   },
   methods: {
     saveChanges () {
@@ -221,37 +227,57 @@ export default defineComponent({
         .then(data => {
           results = data
         })
+      console.log(results)
       for (let i = 0; i < results.length; i++) {
-        const aanb = results[i].aanbevelingen
-        const ids = results[i].aanbevelingen_ids
-        const zipped: [string, string][] = aanb.map(function (e: any, i: any) {
-          return [e, ids[i]]
-        })
+        const aanb = results[i].aanbeveling
+        const id = results[i].aanbeveling_id
+        const name = results[i].name
+        const zipped: [string, string, string] = [aanb, id, name]
         this.richtlijnenList.push(zipped)
-        this.names.push(results[i].name)
       }
+      this.names = this.richtlijnenList.map(function (e: any, i: any) {
+        return e[2]
+      })
+      this.names = [...new Set(this.names)]
     },
     loadRichtlijn (index: number) {
-      this.aanbevelingen = this.richtlijnenList[index]
-      console.log(this.richtlijnenList)
+      console.log(index)
+      const richtlijnFiltered = this.richtlijnenList.filter((e: any, i: any) => {
+        console.log(e[2], this.names[index])
+        return e[2] === this.names[index]
+      })
+      console.log(richtlijnFiltered)
+      const richtlijnRemoveNames = richtlijnFiltered.map(function (e: any, i: any) {
+        return e.slice(0, -1)
+      })
+      console.log(richtlijnRemoveNames)
+      this.aanbevelingen = richtlijnRemoveNames
+      console.log(this.aanbevelingen)
       this.saveChanges()
     },
     async addRichtlijn (name: string) {
       const aanbevelingenSentences = this.aanbevelingen.map(function (e: any, i: any) {
-        return [e[0]]
+        return e[0]
       })
       const aanbevelingenIDs = this.aanbevelingen.map(function (e: any, i: any) {
-        return [e[1]]
+        return e[1]
       })
-      await fetch('http://127.0.0.1:8000/richtlijn_post', {
-        method: 'POST', // *GET, POST, PUT, DELETE, etc.
-        mode: 'cors', // no-cors, *cors, same-origin
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ aanbevelingen: aanbevelingenSentences, aanbevelingen_ids: aanbevelingenIDs, name: name }) // body data type must match "Content-Type" header
-      })
+      console.log('testing_123')
+      console.log(aanbevelingenSentences)
+      console.log(aanbevelingenIDs)
+      console.log(name)
+      for (let i = 0; i < aanbevelingenSentences.length; i++) {
+        await fetch('http://127.0.0.1:8000/richtlijn_post', {
+          method: 'POST', // *GET, POST, PUT, DELETE, etc.
+          mode: 'cors', // no-cors, *cors, same-origin
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ aanbeveling: aanbevelingenSentences[i], aanbeveling_id: aanbevelingenIDs[i], name: name }) // body data type must match "Content-Type" header
+        })
+      }
       this.getRichtlijnen()
+      console.log(this.richtlijnenList)
       this.closeModal()
     },
     async removeRichtlijn (name: string) {
@@ -264,14 +290,15 @@ export default defineComponent({
       this.richtlijnenList = []
       this.names = []
       for (let i = 0; i < results.length; i++) {
-        const aanb = results[i].aanbevelingen
-        const ids = results[i].aanbevelingen_ids
-        const zipped: [string, string][] = aanb.map(function (e: any, i: any) {
-          return [e, ids[i]]
-        })
+        const aanb = results[i].aanbeveling
+        const ids = results[i].aanbeveling_id
+        const name = results[i].name
+        const zipped: [string, string, string] = [aanb, ids, name]
         this.richtlijnenList.push(zipped)
-        this.names.push(results[i].name)
+        this.names.push(name)
       }
+      console.log(this.richtlijnenList)
+      this.names = [...new Set(this.names)]
     },
     closeModal () {
         document.getElementById('closeModalAanbevelingen')!.click()
@@ -327,7 +354,7 @@ export default defineComponent({
   },
   setup () {
     const aanbevelingen = ref([] as [string, string][])
-    const richtlijnenList = ref([] as [string, string][][])
+    const richtlijnenList = ref([] as [string, string, string][])
     const names = ref([] as string[])
     const isEditing = ref(false)
     const nameRichtlijn = ref('')

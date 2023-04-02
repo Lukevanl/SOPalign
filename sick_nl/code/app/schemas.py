@@ -19,8 +19,8 @@ class Feedback(FeedbackBase):
 
 
 class RichtlijnBase(BaseModel):
-    aanbevelingen : list
-    aanbevelingen_ids : list
+    aanbeveling : str
+    aanbeveling_id : str
     name: str
 
 class RichtlijnCreate(RichtlijnBase):
@@ -28,6 +28,6 @@ class RichtlijnCreate(RichtlijnBase):
 
 
 class Richtlijn(RichtlijnBase):
-
+    id: int
     class Config:
         orm_mode = True
