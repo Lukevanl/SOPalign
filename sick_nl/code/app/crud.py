@@ -22,7 +22,7 @@ def get_richtlijn_by_name(db: Session, name: str):
     return db.query(models_sql.Richtlijn).filter(models_sql.Richtlijn.name == name).first()
 
 def get_richtlijnen(db: Session, skip: int = 0, limit: int = 2000000):
-    return db.query(models_sql.Richtlijn).offset(skip).limit(limit).all()
+    return db.query(models_sql.Richtlijn).order_by(models_sql.Richtlijn.id).offset(skip).limit(limit).all()
     
 def create_richtlijn(db: Session, richtlijn: schemas.RichtlijnCreate):
     db_richtlijn_row = models_sql.Richtlijn(name = richtlijn.name, aanbeveling=richtlijn.aanbeveling, aanbeveling_id=richtlijn.aanbeveling_id)

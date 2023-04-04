@@ -18,7 +18,7 @@
       <div class="col-6">
         <div class="panel panel-default" style="min-height: 400px">
               <div data-matchheights="t" class="panel-heading">
-                <h3 class="panel-title">Bestanden toevoegen (pdf)</h3>
+                <h3 class="panel-title">SOPs toevoegen (pdf)</h3>
               </div>
               <div data-matchheights="b" class="panel-body">
                 <div class="container-small ">
