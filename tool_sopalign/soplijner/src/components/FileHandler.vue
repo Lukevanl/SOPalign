@@ -99,32 +99,38 @@ export default defineComponent({
         const cleanedSentence = sentence.trim()
         // Concat sentences if most likely wrongly separated (checked by below conditions)
         // Attempt 1:
-        if (((!('.-?!"·o'.includes(sentence[sentence.length - 1]))) || (sentence.slice(-3) === 'dr.')) && (i + 1 !== sentences.length)) {
-          sentences[i + 1] = cleanedSentence + ' ' + sentences[i + 1].trim()
-          continue
-        }
-        // Attempt 2:
-        // if (((!('.-?!"·o*#<>[]:|@123456789'.includes(sentence[sentence.length - 1]))) ||
-        //   (!('.-?!"·o*#<>[]:|@123456789'.includes(sentence[sentence.length - 2]))) ||
-        //   (sentence.slice(-3) === 'dr.')) &&
-        //   (i + 1 !== sentences.length)) {
-        //   if (sentences[i + 1].length < 1) {
-        //     sentences[i + 1] = sentence + sentences[i + 1]
-        //     console.log(sentences[i + 1])
-        //     continue
-        //   }
-        //   const nextChar = sentences[i + 1][0]
-        //   const charUpper = nextChar.toUpperCase()
-        //   const charLower = nextChar.toLowerCase()
-        //   // Check if next sentence starts with capital, if yes, dont concat.
-        //   if (nextChar === charUpper && nextChar !== charLower) {
-        //     cleanedSentences.push(sentence)
-        //     continue
-        //   }
-        //   sentences[i + 1] = sentence.trim() + ' ' + sentences[i + 1].trim()
-        //   console.log(sentences[i + 1])
+        // if (((!('.-?!"·o'.includes(sentence[sentence.length - 1]))) || (sentence.slice(-3) === 'dr.')) && (i + 1 !== sentences.length)) {
+        //   sentences[i + 1] = cleanedSentence + ' ' + sentences[i + 1].trim()
         //   continue
         // }
+        // Attempt 2:
+        // if (((!('.-?!"·o*#<>[]:|\uf0b7'.includes(sentence[sentence.length - 1]))) ||
+        //   (!('.-?!"·o*#<>[]:|\uf0b7'.includes(sentence[sentence.length - 2])))) &&
+        //   (i + 1 !== sentences.length)) {
+        if ((i + 1 !== sentences.length)) {
+          if (sentences[i + 1].match(/^[0-9a-z-/+=:;'"~`%& \n\t]/)) {
+            if (sentences[i + 1].length < 2) {
+              sentences[i + 1] = sentence + sentences[i + 1]
+              console.log(sentences[i + 1])
+              continue
+            }
+            const nextChar = sentences[i + 1][0]
+            const secondNextChar = sentences[i + 1][1]
+            const charUpper = nextChar.toUpperCase()
+            const charLower = nextChar.toLowerCase()
+            const charUpperNext = secondNextChar.toUpperCase()
+            const charLowerNext = secondNextChar.toLowerCase()
+            // Check if next sentence starts with capital, if yes, dont concat.
+            if (nextChar === charUpper && nextChar !== charLower && !(secondNextChar === charUpperNext && secondNextChar !== charLowerNext)) {
+              cleanedSentences.push(sentence)
+              continue
+            }
+            sentences[i + 1] = sentence.trim() + ' ' + sentences[i + 1].trim()
+            console.log(sentences[i + 1])
+            continue
+          }
+        }
+        //
         cleanedSentences.push(sentence)
       }
       return cleanedSentences

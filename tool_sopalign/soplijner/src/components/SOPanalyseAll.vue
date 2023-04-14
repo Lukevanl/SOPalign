@@ -13,7 +13,7 @@
                         <p style="text-align: center; color:gray; left: 50px; margin-top: 10px; opacity: 0.8;">Een hogere striktheid geeft over het algemeen minder overbodige annotaties maar mist ook meer belangrijke annotaties. <br>Mocht het analyseren te lang duren, zet de striktheid dan hoger.</p>
                       </div>
                       <div class="slidecontainer" align="center" justify="center" style="margin-top: 10px;">
-                        <VueSlider v-model="strictnessValue" dragOnClick=true width="40%" dotSize=20 :value="'Normaal'" :data="['Erg Mild', 'Mild', 'Normaal', 'Strikt', 'Erg Strikt']"/>
+                        <VueSlider v-model="strictnessValue" dragOnClick=true width="40%" dotSize=20 :value="'Normaal'" :data="['Extreem Mild', 'Erg Mild', 'Mild', 'Normaal', 'Strikt', 'Erg Strikt', 'Extreem Strikt']"/>
                       </div>
                       <div style="margin-top: 25px;">
                         <button type="button" class="btn btn-primary" @click="analyseWithStrictness(strictnessValue)" style="color:white;">Analyseer opnieuw met striktheid: {{ strictnessValue }}</button>

@@ -175,9 +175,12 @@ async def get_sentence_pairs(chosen_strictness: str = "Normaal"):
         above_both_threshold_count = 0
         #Loop that calculates STS + Cosine scores and filters out sentences considered irrelevant (below thereshold)
         for sop_sent in sop_sentences:
+            nr_connected_to_sop_sent = 0
+            connections_to_sop_sent_data = []
             for aanbeveling in aanbevelingen:
                 total_count += 1
                 score = calculate_cosine_similarity(cosineObject, sop_sent, aanbeveling[0])
+                #score = score - ((len(aanbeveling) + len(sop_sent)) / (len(aanbeveling) * len(sop_sent) * 3))
                 f.write(f"sop:{sop_sent} aanb: {aanbeveling} \n cos_score = {score}")
                 #print(score, end= " | ")
                 if(score > cosine_threshold):
@@ -186,12 +189,22 @@ async def get_sentence_pairs(chosen_strictness: str = "Normaal"):
                     f.write(f", sts_score = {sts_score}")
                     #print(sts_score)
                     if(sts_score > sts_threshold):
-                        above_both_threshold_count += 1
-                        sentence_pairs.append([aanbeveling[0], sop_sent])
-                        identifiers.append(aanbeveling[1])
-                        print(f"{score} for sentence \n {sop_sent} \n -------compared to------- \n {aanbeveling[0]}\n")
-                        print(f"STS score: {sts_score}\n\n")
+                        connections_to_sop_sent_data.append([aanbeveling[0], sop_sent, aanbeveling[1], sts_score, score])
+                        nr_connected_to_sop_sent += 1
                 f.write("\n")
+            #Sort connections based on sts score
+            connections_to_sop_sent_data.sort(key=lambda x: -x[3])
+            #Only keep top three connections
+            if (len(connections_to_sop_sent_data) > 3):
+                connections_top3 = connections_to_sop_sent_data[:3]
+            else:
+                connections_top3 = connections_to_sop_sent_data
+            for (aanbeveling, sop_sent, id_x, sts_score, score) in connections_top3:
+                above_both_threshold_count += 1
+                sentence_pairs.append([aanbeveling, sop_sent])
+                identifiers.append(id_x)
+                print(f"{score} for sentence \n {sop_sent} \n -------compared to------- \n {aanbeveling}\n")
+                print(f"STS score: {sts_score}\n\n")
         threshold_counts[0] += total_count 
         threshold_counts[1] += above_cosine_threshold_count
         threshold_counts[2] += above_both_threshold_count
@@ -297,7 +310,7 @@ def print_results(sentence_pairs, pred, prob, id):
 
 def mapStrictnessToThresholds(chosenStrictness):
     #strictnessToThresholds = {"Erg Mild": [0.175, 0.625], "Mild": [0.20, 0.675], "Normaal": , "Strikt": , "Erg Strikt": [0.25, 0.76]} #old values
-    strictnessToThresholds = {"Erg Mild": [0.16, 0.600], "Mild": [0.175, 0.63], "Normaal": [0.20, 0.675], "Strikt": [0.225, 0.69], "Erg Strikt": [0.2375, 0.72]}
+    strictnessToThresholds = {"Extreem Mild": [0.15, 0.575], "Erg Mild": [0.16, 0.600], "Mild": [0.18, 0.64], "Normaal": [0.20, 0.675], "Strikt": [0.215, 0.69], "Erg Strikt": [0.23, 0.71], "Extreem Strikt": [0.24, 0.75]}
     cosine, sts = strictnessToThresholds[chosenStrictness]
     return cosine, sts
 
