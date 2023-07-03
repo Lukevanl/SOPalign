@@ -1,7 +1,7 @@
 <template>
-  <div>
+  <div style="background-color: #fafafa;">
     <div class="logo">
-    <img alt="Radboudumc logo" src="@/assets/img/sopalign.png" style="margin-left: auto;margin-right: auto;display: block;width: 18%;margin-bottom: 10px; margin-top: 12px;">
+    <img alt="Radboudumc logo" src="@/assets/img/sopalign.png" style="background-color: #f8f5f5; margin-left: auto;margin-right: auto;display: block;width: 18%;margin-bottom: 10px; margin-top: 12px;">
     </div>
     <div>
       <div class="nav">

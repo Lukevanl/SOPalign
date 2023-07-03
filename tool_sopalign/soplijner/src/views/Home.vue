@@ -1,5 +1,5 @@
 <template>
-  <div class="home" style="background-color: #FAFAFA;">
+  <div class="home" style="background-color: #fafafa;">
     <div class="row">
       <div class="col-6">
         <div class="panel panel-default" style="min-height: 400px">

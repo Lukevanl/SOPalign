@@ -42,12 +42,12 @@
               />
           </tbody>
     </table>
-    <h3>Upload aanbevelingen vanaf tsv bestand</h3>
+    <!-- <h3>Upload aanbevelingen vanaf tsv bestand</h3>
     <form id="csvForm">
     <input type="file" accept=".tsv" id="aanbevelingenFile"/>
     <br>
     <input type="button" value="Submit file" @click="tsvHandler"/>
-    </form>
+    </form> -->
     <!-- Modal -->
     <div class="modal fade" id="aanbevelingenModal" tabindex="-1" aria-labelledby="aanbevelingenModalLabel" aria-hidden="true">
       <div class="modal-dialog">

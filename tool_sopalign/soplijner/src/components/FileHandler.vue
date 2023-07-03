@@ -21,7 +21,7 @@
     </div>
     <input type="file" id="pdfuploader" accept=".pdf" @change="getAllTextsFromFiles()" multiple>
   </div>
-  <button type="button" class="btn btn-primary" @click="analyseAll()" style="color:white;">Analyseer alles</button>
+  <button type="button" class="btn btn-primary" @click="analyseAll()" style="color:white;">Analyseer</button>
 
 </template>
 

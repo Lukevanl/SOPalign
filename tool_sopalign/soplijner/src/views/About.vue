@@ -1,5 +1,6 @@
 <template>
-  <div class="row justify-content-md-center">
+  <div style="background-color: #fafafa;">
+  <div class="row justify-content-md-center" style="background-color: #fafafa;">
     <h2 style="text-align: center; margin-top: 20px; margin-bottom: 20px; color: black; font-weight: 600;"> Ontwikkeld door:</h2>
     <div class="col-3">
        <div class="panel panel-default" style="min-height: 150px">
@@ -38,7 +39,7 @@
             </div>
     </div>
   </div>
-  <div class="row justify-content-md-center">
+  <div class="row justify-content-md-center" >
     <h2 style="text-align: center; margin-top: 20px; margin-bottom: 20px; color: black; font-weight: 600;"> Gefinancierd door:</h2>
     <div class="col-3">
        <div class="panel panel-default" style="min-height: 150px">
@@ -77,6 +78,7 @@
             </div>
     </div>
   </div>
+</div>
 </template>
 
 <script lang="ts">
