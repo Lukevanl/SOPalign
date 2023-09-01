@@ -1,29 +1,5 @@
 <template>
       <div style="border-top: 2px solid black">
-      <div v-if="!resultsNotLoaded" id="changeStrictness">
-          <div class="panel panel-default">
-                <div data-matchheights="t" class="panel-heading">
-                  <h3 class="panel-title">Pas striktheid aan</h3>
-                </div>
-                <div data-matchheights="b" class="panel-body">
-                <div class="container-small ">
-                  <div data-matchheights="d" class="description">
-                    <div>
-                      <div>
-                        <p style="text-align: center; color:gray; left: 50px; margin-top: 10px; opacity: 0.8;">Een hogere striktheid geeft over het algemeen minder overbodige annotaties maar mist ook meer belangrijke annotaties. <br>Mocht het analyseren te lang duren, zet de striktheid dan hoger.</p>
-                      </div>
-                      <div class="slidecontainer" align="center" justify="center" style="margin-top: 10px;">
-                        <VueSlider v-model="strictnessValue" dragOnClick=true width="40%" dotSize=20 :value="'Normaal'" :data="['Extreem Mild', 'Erg Mild', 'Mild', 'Normaal', 'Strikt', 'Erg Strikt', 'Extreem Strikt']"/>
-                      </div>
-                      <div style="margin-top: 25px;">
-                        <button type="button" class="btn btn-primary" @click="analyseWithStrictness(strictnessValue)" style="color:white;">Analyseer opnieuw met striktheid: {{ strictnessValue }}</button>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                </div>
-            </div>
-          </div>
         <div id="resultsSummary">
           <div class="panel panel-default">
                 <div data-matchheights="t" class="panel-heading">
@@ -94,41 +70,48 @@
           <div data-matchheights="b" class="panel-body">
             <div class="container-small" >
               <div data-matchheights="d" class="description">
-                <div v-if="!resultsNotLoaded">
-                <div class="form-check" style="width: 20%">
+                <div class="row justify-content-md-center">
+                <div class="col-5">
+                <div class="panel panel-default panel-small" v-if="!resultsNotLoaded" style="margin: 0 auto;">
+                  <div data-matchheights="t" class="panel-heading">
+                    <h4 class="panel-title"> <b>Filter de tabel </b></h4>
+                  </div>
+                <div class="form-check">
                   <input class="form-check-input" type="checkbox" value="" id="checkCurrentPDF" v-model="onlyCurrentPDFSelector" @change ="filterTable">
                   <label class="form-check-label" for="checkCurrentPDF">
                     Laat alleen huidige PDF zien
                   </label>
                 </div>
-                <div class="form-check" style="width: 20%">
+                <div class="form-check">
                   <input class="form-check-input" type="checkbox" value="" id="checkAanb" v-model="onlyEnteredAanb" @change="filterTable">
                   <label class="form-check-label" for="checkCurrentPDF">
-                    Laat alleen ingevulde aanbeveling zien
+                    Laat alleen ingevulde aanbeveling zien:
                   </label>
-                  <input type="text" value="" name="filterAanb" id="filterAanb" placeholder="Aanbeveling ID om te filteren..." style="width: 250px;">
+                  <input type="text" value="" name="filterAanb" id="filterAanb" placeholder="Aanbeveling ID om te filteren..." style="width: 225px; margin-left: 10px;">
                 </div>
-                  <div class="form-check" style="width: 20%">
+                  <div class="form-check">
                   <input class="form-check-input" type="checkbox" value="" id="nietConformFilter" v-model="showNietConform" @change ="filterTable" checked>
                   <label class="form-check-label" for="NietConformFilter">
                     Niet conform
                   </label>
                   </div>
-                  <div class="form-check" style="width: 20%">
+                  <div class="form-check">
                   <input class="form-check-input" type="checkbox" value="" id="conformFilter" v-model="showConform" @change ="filterTable" checked>
                   <label class="form-check-label" for="conformFilter">
                     Conform
                   </label>
                   </div>
-                  <div class="form-check" style="width: 20%">
+                  <div class="form-check">
                   <input class="form-check-input" type="checkbox" value="" id="neutraalFilter" v-model="showNeutraal" @change ="filterTable" checked>
                   <label class="form-check-label" for="neutraalFilter">
                     Neutraal
                   </label>
                   </div>
                 </div>
-                <div>
-                  <button type="button" id="reloadButton" class="btn btn-primary" @click="reloadAllWithChanges()" disabled style="color:white;">Herlaad met correcties</button>
+              </div>
+            </div>
+                <div style="padding: 5px;">
+                  <button type="button" id="reloadButton" class="btn btn-primary" @click="reloadAllWithChanges()" disabled style="color:white; padding-bottom: 5px;">Herlaad tabel met correcties</button>
                 </div>
                 <table class="table table-bordered">
                   <thead style="text-align: center; background-color: #E0F2F2;">
@@ -165,6 +148,30 @@
               v-bind:results="allResultsAnalyser"
               v-bind:resultsNotLoaded="resultsNotLoaded"
           />
+      <div v-if="!resultsNotLoaded" id="changeStrictness">
+      <div class="panel panel-default">
+            <div data-matchheights="t" class="panel-heading">
+              <h3 class="panel-title">Pas striktheid aan</h3>
+            </div>
+            <div data-matchheights="b" class="panel-body">
+            <div class="container-small ">
+              <div data-matchheights="d" class="description">
+                <div>
+                  <div>
+                    <p style="text-align: center; color:gray; left: 50px; margin-top: 10px; opacity: 0.8;">Een hogere striktheid geeft over het algemeen minder overbodige annotaties maar mist ook meer belangrijke annotaties. <br>Mocht het analyseren te lang duren, zet de striktheid dan hoger.</p>
+                  </div>
+                  <div class="slidecontainer" align="center" justify="center" style="margin-top: 10px;">
+                    <VueSlider v-model="strictnessValue" dragOnClick=true width="40%" dotSize=20 :value="'Normaal'" :data="['Extreem Mild', 'Erg Mild', 'Mild', 'Normaal', 'Strikt', 'Erg Strikt', 'Extreem Strikt']"/>
+                  </div>
+                  <div style="margin-top: 25px;">
+                    <button type="button" class="btn btn-primary" @click="analyseWithStrictness(strictnessValue)" style="color:white;">Analyseer opnieuw met striktheid: {{ strictnessValue }}</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+            </div>
+        </div>
+      </div>
     </div>
 </template>
 
@@ -268,8 +275,8 @@ export default defineComponent({
       const page = parseInt((document.getElementById('goToPage') as HTMLInputElement).value)
       console.log(page)
       var newPage = page
-      if (newPage < 0) {
-        newPage = 0
+      if (newPage < 1) {
+        newPage = 1
       } else {
         newPage = Math.min(page - 1, this.fileNames.length - 1)
       }
@@ -593,6 +600,14 @@ $newbuttoncolor: $rumc-light;
 .btn-primary {
     @include button-variant($newbuttoncolor, darken($newbuttoncolor, 7.5%), darken($newbuttoncolor, 10%), lighten($newbuttoncolor,5%), lighten($newbuttoncolor, 10%), darken($newbuttoncolor,30%));
 }
+
+.panel-small {
+    text-align: center;
+    -webkit-box-shadow: 0 0 10px 2px rgba(0, 0, 0, 0.05);
+    box-shadow: 0 0 10px 2px rgba(0, 0, 0, 0.05);
+    margin: 18px;
+    background-color: #FFFFFF;
+  }
 
 </style>
 

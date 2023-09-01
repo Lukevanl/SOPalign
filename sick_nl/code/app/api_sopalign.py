@@ -300,7 +300,7 @@ def generate_annotation_text(aanbevelingen, aanbeveling_ids, labels, probabiliti
             probability_for_label = probability[label_to_index[label]] * 100
         else:
             probability_for_label = probability * 100
-        text_body += f"Aanbeveling {index+1}: \n{aanbeveling} (ID={id})\nLabel is {label} t.o.v. de sop passage met {probability_for_label:.2f}% kans\n" 
+        text_body += f"Koppeling {index+1}: \n{aanbeveling} (ID={id})\nLabel is {label} t.o.v. de sop passage met {probability_for_label:.2f}% kans\n" 
     return text_header + text_body
 
 

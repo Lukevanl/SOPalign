@@ -17,7 +17,7 @@
                       <li><b>Het gebruiken van een richtlijn die al in de tool zit:</b> In onderstaande tabel kan een bestaande richtlijn worden ingeladen door op het icoontje met de pijl te drukken.  </li>
                       <img alt="Tabel bestaande richtlijnen" src="@/assets/img/tut1.png" style="background-color: #f8f5f5; display: block; width: 58%;margin-bottom: 10px; margin-top: 12px;">
                       <li><b>Zelf een richtlijn toevoegen:</b> <p>Klik op het plusje om handmatig de aanbevelingen uit een richtlijn toe te voegen. Vul telkens één aanbeveling in. Als in een richtlijn in één alinea of onder één kopje meerdere aanbevelingen opgesomd zijn, vul je deze één voor één in. </p>
-                      <p>Vul de letterlijke tekst van de aanbeveling in en een ID waarmee je de aanbeveling identificeert. Klik vervolgens op 'voeg aanbeveling toe' om de aanbeveling op te slaan. </p></li>
+                      <p>Vul de letterlijke tekst van de aanbeveling in en een <b> ID </b> waarmee je de aanbeveling identificeert. Deze ID wordt in de tool gebruikt om naar deze aanbeveling te refereren. Klik vervolgens op 'voeg aanbeveling toe' om de aanbeveling op te slaan. </p></li>
                       <img alt="Individuele aanbeveling toevoegen" src="@/assets/img/tut2.png" style="background-color: #f8f5f5; display: block; width: 58%;margin-bottom: 10px; margin-top: 12px;">
                       <p> <b><i>Belangrijk: Sla een richtlijn op na het handmatig toevoegen van de aanbevelingen en geef hem een naam door op de blauwe 'Sla richtlijn op' knop te klikken. Als je dit niet doet verdwijnt de richtlijn zodra je van pagina wisselt. </i></b></p>
                     </ol>
@@ -29,22 +29,24 @@
                       Je hebt de PDFs nodig van de SOPs die je wilt analyseren. </p>
                     <p>Het uploaden van de SOPs is erg eenvoudig, klik op de 'Browse...' knop en selecteer de PDFs van de SOPs die je wil analyseren.</p>
                     <p><b>TIP:</b> gebruik de toetscombinatie Ctrl+A om alle bestanden in een folder te selecteren. Dit scheelt een hoop tijd wanneer je alle SOP's uit een folder wil uploaden.</p>
-                    <p>Zodra de richtlijn is ingeladen, en de SOPs geüpload zijn, kun je op de 'Analyseer' knop drukken om de tool te starten.</p>
+                    <p>Zodra de richtlijn is ingeladen, en de SOPs geüpload zijn, kun je op de <b> 'Analyseer' </b> knop drukken om de tool te starten.</p>
 
                     <h3>Interpreteren resultaten</h3>
                     <p>Zodra de tool klaar is, worden de resultaten op vier verschillende manieren getoond:</p>
                     <ol>
                       <li><b>Samenvatting:</b> Bovenaan de pagina staat een korte samenvatting van de resultaten. Hierin staat hoeveel aanbevelingen er in totaal zijn gekoppeld, de tijd dat dit kostte en de conformiteit van de SOP passage met de gekoppelde aanbeveling.
-                        Er zijn drie mogelijke labels die word geplakt aan elke koppeling: <b>conform</b> (de SOP passage is conform met de gekoppelde aanbeveling), <b>niet conform</b> (de SOP passage is <i>niet</i> conform met de gekoppelde aanbeveling) en
-                        <b>neutraal</b> (de gekoppelde aanbeveling is niet relevant, en hoort niet gekoppeld te zijn aan de SOP passage).
-                      </li> <br>
+                        Er zijn drie mogelijke labels die worden geplakt aan elke koppeling: <b>conform</b> (de SOP passage is conform met de gekoppelde aanbeveling), <b>niet conform</b> (de SOP passage is <i>niet</i> conform met de gekoppelde aanbeveling) en
+                        <b>neutraal</b> (de gekoppelde aanbeveling is niet relevant, en hoort niet gekoppeld te zijn aan de SOP passage). Een voorbeeld voor elke label staat in de onderstaande tabel:
+                      </li>
+                      <img alt="Tabel met voorbeelden" src="@/assets/img/tut6.png" style="background-color: #f8f5f5; display: block; width: 58%;margin-bottom: 10px; margin-top: 12px;">
+                      <br>
                       <li><b>Geannoteerde PDF:</b> Onder de samenvatting zie je de ingevoerde PDFs met markeringen die aangeven waar tekst is gekoppeld aan aanbevelingen.
                         Bij elke gele markeringen staat een notitie die informatie geeft over de gemaakte koppeling.
                         Eerst wordt per SOP passage aangegeven hoeveel aanbevelingen hier aan gekoppeld zijn.
-                        Vervolgens staat per koppeling aangegeven: aan welke aanbeveling de passage is gekoppeld, de conformiteit van de koppeling, en hoe zeker het model is (in %) over deze confomiteits label.</li>
+                        Vervolgens staat per koppeling aangegeven: aan welke aanbeveling de passage is gekoppeld (inclusief de ID van deze aanbeveling), de conformiteit van de koppeling, en hoe zeker het model is (in %) over deze confomiteits label.</li>
                       <img alt="Annotatie van tool" src="@/assets/img/tut3.png" style="background-color: #f8f5f5; display: block; width: 58%;margin-bottom: 10px; margin-top: 12px;">
                       <br>
-                      <li><p><b>Tabel met alle resultaten:</b> Onder de PDF vind je een tabel met alle resultaten. Boven deze tabel vind je filters waarmee je naar specifieke informatie kan zoeken.
+                      <li><p><b>Tabel met alle resultaten:</b> Onder de PDF vind je een tabel met alle resultaten. Boven deze tabel vind je <b>filters</b> waarmee je naar specifieke informatie kan zoeken.
                         Zo kan je bijvoorbeeld alleen de annotaties van de huidige PDF bekijken, of alleen de conforme labels, of alleen de annotaties voor één aanbeveling door de ID van deze aanbeveling in te voeren.
                       </p><b>Belangrijk:</b> de tool is nog niet foutloos, maar je kan helpen deze te verbeteren. Door op het toverstafje te klikken kan je de label van de gemarkeerde tekst aanpassen.
                         Klik op 'herlaad met correcties' als je klaar bent met verbeteren. De tool leert van deze correcties en wordt daardoor slimmer.
@@ -58,7 +60,7 @@
                       </li>
                     </ol>
                     <p>
-                    Naast de resultaten staat ook nog helemaal bovenaan de pagina een <b>slider</b>:
+                    Naast de resultaten staat ook nog helemaal <b>onderaan de pagina een slider</b>:
                     </p>
                     <img alt="Slider voor striktheid van de tool" src="@/assets/img/tut4.png" style="background-color: #f8f5f5; display: block; width: 58%;margin-bottom: 10px; margin-top: 12px;">
                     <p>Soms markeert de tool te veel of te weinig tekst. Door deze slider te verschuiven kan je dit oplossen. Door hem naar links te schuiven (minder strikt) markeert de tool meer tekst. Je krijgt juist minder gemarkeerde tekst als je hem naar rechts verschuift.

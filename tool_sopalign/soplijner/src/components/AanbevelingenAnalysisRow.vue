@@ -2,7 +2,7 @@
   <tr>
     <td class="table-cell"> {{ aanbeveling[0] }} </td>
     <td class="table-cell"> {{ aanbeveling[1] }} </td>
-    <td class="compliance-cell"> {{ (resultsForAanbevelingConform.length / (resultsForAanbevelingNietConform.length + resultsForAanbevelingConform.length)).toFixed(2) }} </td>
+    <td class="compliance-cell"> {{ ifNaN((resultsForAanbevelingConform.length / (resultsForAanbevelingNietConform.length + resultsForAanbevelingConform.length)).toFixed(2)) }} </td>
     <td class="table-cell"> {{ resultsForAanbeveling.length }} </td>
     <td class="table-cell"> {{ resultsForAanbevelingConform.length }} </td>
     <td class="table-cell"> {{ resultsForAanbevelingNeutraal.length }} </td>
@@ -26,6 +26,15 @@ export default defineComponent({
       resultsForAanbevelingConform,
       resultsForAanbevelingNietConform,
       resultsForAanbevelingNeutraal
+    }
+  },
+  methods: {
+    ifNaN (x: number) {
+      if (isNaN(x)) {
+        return '-'
+      } else {
+        return x
+      }
     }
   }
 })
