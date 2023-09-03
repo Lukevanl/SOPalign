@@ -1,4 +1,5 @@
 <template>
+   <!-- Simple row template for displaying the recommendations from the guidlines. Includes the option to remove/edit individual recommendations. -->
   <tr>
     <td class="table-filename"> {{ aanbeveling[0] }} </td>
     <td class="table-filename"> {{ aanbeveling[1] }} </td>

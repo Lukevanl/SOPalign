@@ -1,4 +1,5 @@
 <template>
+  <!-- Old feature that was used to analyse a single SOP instead of all the uploaded SOPs. Currently not used but left in for completeness. -->
       <div style="border-top: 2px solid black">
       <div v-if="!resultsNotLoaded" id="changeStrictness">
           <div class="panel panel-default">

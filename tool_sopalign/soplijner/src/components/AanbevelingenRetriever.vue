@@ -1,4 +1,7 @@
 <template>
+  <!--
+    A lot of code but very basic selfg-explenatory functionality to add/load/edit guidelines
+  -->
   <button type="button" class="btn btn-primary" @click="openAddingRichtlijnModal()" style="color:white; margin-bottom: 10px;">Sla richtlijn op</button>
   <table class="table table-bordered">
           <thead style="text-align: center; background-color: #E0F2F2;">
@@ -193,6 +196,7 @@ export default defineComponent({
   components: { AanbevelingenRow, RichtlijnRow },
   mounted: async function () {
     var results: any[] = []
+    // Load currently saved guidelines
     await fetch('http://127.0.0.1:8000/richtlijn/')
       .then(res => res.json())
       .then(data => {
@@ -219,6 +223,7 @@ export default defineComponent({
       this.$store.commit('changeAanbevelingen', this.aanbevelingen)
     },
     async getRichtlijnen () {
+      // loads the saved guidelines currently stored in the database.
       this.aanbevelingen = []
       this.names = []
       var results: any[] = []

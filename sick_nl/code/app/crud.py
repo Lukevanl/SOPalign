@@ -2,6 +2,8 @@ from sqlalchemy.orm import Session
 from sqlalchemy import delete
 import models_sql, schemas
 
+#Based on tutorial: https://fastapi.tiangolo.com/tutorial/sql-databases/
+
 def get_feedback(db: Session, feedback_id: int):
     return db.query(models_sql.Feedback).filter(models_sql.Feedback.id == feedback_id).first()
     

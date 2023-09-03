@@ -1,10 +1,12 @@
 <template>
+  <!-- Simple row template for displaying the results of the analysis per recommendation -->
   <tr>
     <td> {{ value[0][0] }} </td>
     <td> {{ value[0][1] }} </td>
     <td> {{ value[1] }} </td>
     <td class="tdLabel"> {{ value[2] }} </td>
     <td> {{ probability }} </td>
+    <!-- Important element, can be used by the user to correct the model. -->
     <td> <button @click="$emit('correct')" class="table-button" data-bs-toggle="tooltip" title="Corrigeer annotatie"><font-awesome-icon icon="wand-magic-sparkles" size="2x" /></button> </td>
     <td v-if="value.length === 5"> {{ value[4] }} </td>
 </tr>
@@ -19,6 +21,7 @@ export default defineComponent({
   setup (props) {
     const labelToIndex: any = { 'niet conform': 0, neutraal: 1, conform: 2 }
     const probability = (props.value[3][labelToIndex[props.value[2]]] * 100).toFixed(2) + '%'
+    // Attempt to change colors of cells based on conformity labels, I didnt like the look of it, might be worth exploring.
     // var allCells = document.getElementsByClassName('tdLabel')
     // for (let i = 0; i < allCells.length; i++) {
     //   var elem = allCells[i] as HTMLElement

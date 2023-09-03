@@ -1,4 +1,5 @@
 <template>
+  <!-- Creates layout for the homepage. Contains two elements: Panel for adding recommendations (right) and uploading SOPs (left) -->
   <div class="home" style="background-color: #fafafa;">
     <div class="row">
       <div class="col-6">

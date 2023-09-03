@@ -1,4 +1,5 @@
 <template>
+  <!-- Row template for displaying a single annotation -->
   <tr>
     <td class="table-cell"> {{ aanbeveling[0] }} </td>
     <td class="table-cell"> {{ aanbeveling[1] }} </td>
@@ -29,6 +30,7 @@ export default defineComponent({
     }
   },
   methods: {
+    // If dividing by zero, replace by '-'
     ifNaN (x: number) {
       if (isNaN(x)) {
         return '-'

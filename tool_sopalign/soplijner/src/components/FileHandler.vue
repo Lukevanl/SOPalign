@@ -1,4 +1,5 @@
 <template>
+  <!-- Takes care of UI of uploading and removing SOPs. Includes the functionality to extract the text from them and split it into 'sentences' -->
   <div class="row" id="handleInputPDFs">
     <div id="PDFtable">
       <table class="table table-bordered">
@@ -40,21 +41,25 @@ export default defineComponent({
   components: { PDFTableRow },
   methods: {
     isUpperCase (stringToCheck: string) {
+      // Check if the first letter is uppercase. Used for determining whether it is the strart of a new sentence.
       const strUpper = stringToCheck.toUpperCase()
       const strLower = stringToCheck.toLowerCase()
       return stringToCheck === strUpper && stringToCheck !== strLower
     },
     saveChanges () {
+      // Save changes to cache, later loaded in SOPanalyseAll component.
       this.$store.commit('changeFileContents', this.fileContents)
       this.$store.commit('changeFileURLS', this.fileURLS)
       this.$store.commit('changeFileNames', this.fileNames)
       this.$store.commit('changeFileObjects', this.fileObjects)
     },
     openAnalyser (index: number) {
+      // Currently not used
       this.$store.commit('changeIndex', index)
       this.$router.push('/tool/analyse-single')
     },
     analyseAll () {
+      // Link to SOPanalyseAll component.
       this.$router.push('/tool/analyse-all')
     },
     async extractTextFromPage (page: any) {
@@ -94,6 +99,7 @@ export default defineComponent({
       }
     },
     cleanSentences (sentences: string[]) {
+      // Code for splitting the big lap of text into sentences. Possible room for imrpvoement here. Current naive approach.
       var cleanedSentences = []
       for (const [i, sentence] of sentences.entries()) {
         const cleanedSentence = sentence.trim()

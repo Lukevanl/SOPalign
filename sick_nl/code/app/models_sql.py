@@ -1,6 +1,8 @@
 from sqlalchemy import Boolean, Column, ForeignKey, Integer, String, PickleType
 from sqlalchemy.orm import relationship
 
+#Based on tutorial: https://fastapi.tiangolo.com/tutorial/sql-databases/
+
 from database import Base
 
 

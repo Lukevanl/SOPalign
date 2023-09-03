@@ -1,4 +1,5 @@
 <template>
+  <!-- Tutorial tab explaining the tool in detail. -->
 <div class="row justify-content-md-center" style="background-color: #fafafa;">
       <div class="col-8">
         <div class="panel panel-default" style="min-height: 400px">

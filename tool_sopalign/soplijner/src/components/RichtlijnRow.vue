@@ -1,4 +1,5 @@
 <template>
+  <!-- Simple row template for the table used for displaying, loading and removing guidelines. -->
     <tr>
       <td class="table-filename"> {{ name }} </td>
       <td> <button @click="$emit('load')" class="table-button" data-bs-toggle="tooltip" title="Laad richtlijn"><font-awesome-icon icon="upload" /></button> </td>

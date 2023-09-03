@@ -1,7 +1,10 @@
 <template>
+  <!-- Where the magic happens, this component is loaded when pressing the 'ANalyse all' button. It analyses all the SOPs through API request
+  and returns all the annotated PDFs and all other relevant information. -->
       <div style="border-top: 2px solid black">
         <div id="resultsSummary">
           <div class="panel panel-default">
+            <!-- Panel displaying a summary of the results -->
                 <div data-matchheights="t" class="panel-heading">
                   <h3 class="panel-title">Samenvatting resultaten</h3>
                 </div>
@@ -34,6 +37,7 @@
             </div>
           </div>
       <div class="panel panel-default">
+        <!-- Panel containing the annotated PDFs and buttons + a text field to navigate between the PDFs -->
           <div data-matchheights="t" class="panel-heading">
             <h3 class="panel-title">PDF met highlights</h3>
           </div>
@@ -63,6 +67,7 @@
         </div>
       </div>
       <div id="resultsTable">
+        <!-- Panel with a large table with all the results. Abovethe table there are numerous options to filter the table. On every filter change, the filterTable function is called which refilters the table based on all the selected filters -->
         <div class="panel panel-default">
           <div data-matchheights="t" class="panel-heading">
             <h3 class="panel-title">Tabel met gedetailleerde resultaten</h3>
@@ -114,6 +119,7 @@
                   <button type="button" id="reloadButton" class="btn btn-primary" @click="reloadAllWithChanges()" disabled style="color:white; padding-bottom: 5px;">Herlaad tabel met correcties</button>
                 </div>
                 <table class="table table-bordered">
+                  <!-- The actual table -->
                   <thead style="text-align: center; background-color: #E0F2F2;">
                       <tr class="table_head">
                       <th scope="col">Aanbeveling</th>
@@ -130,6 +136,7 @@
                       <tr v-if="resultsNotLoaded">
                         <td align="center" colspan="7"><font-awesome-icon icon="spinner" spin/></td>
                       </tr>
+                      <!-- Functionality and content for each row in separate component. -->
                       <AnalysisResultsRow
                           v-bind:value="value"
                           v-bind:key="index"
@@ -143,6 +150,7 @@
           </div>
         </div>
       </div>
+      <!-- Table with results where each row represent the results for a single recommendation instead of the previous table where each row is a single annotation. -->
       <AanbevelingenAnalysis
               v-bind:aanbevelingen="aanbevelingen"
               v-bind:results="allResultsAnalyser"
@@ -150,6 +158,7 @@
           />
       <div v-if="!resultsNotLoaded" id="changeStrictness">
       <div class="panel panel-default">
+        <!-- Panel where users can change the thresholds of the STS and cosine similarity scores by dragging the slider. -->
             <div data-matchheights="t" class="panel-heading">
               <h3 class="panel-title">Pas striktheid aan</h3>
             </div>
@@ -192,7 +201,9 @@ export default defineComponent({
   name: 'SOPanalyser',
   components: { AnalysisResultsRow, AanbevelingenAnalysis },
   created: async function () {
+    // While this variable is true, no results will be displayed and instead a loading bar will be shown.
     this.resultsNotLoaded = true
+    // Perform the API requests
     await fetch('http://127.0.0.1:8000/post_aanbevelingen', {
       method: 'POST', // *GET, POST, PUT, DELETE, etc.
       mode: 'cors', // no-cors, *cors, same-origin
@@ -205,11 +216,13 @@ export default defineComponent({
     for (let index = 0; index < nrOfFiles; index++) {
       const formData = new FormData()
       formData.append('file', this.fileObjects[index])
+      // Send PDF to API
       await fetch('http://127.0.0.1:8000/post_pdf', {
         method: 'POST', // *GET, POST, PUT, DELETE, etc.
         mode: 'cors', // no-cors, *cors, same-origin
         body: formData // body data type must match "Content-Type" header
       })
+      // Send PDF contents to API
       await fetch('http://127.0.0.1:8000/post_sop', {
         method: 'POST', // *GET, POST, PUT, DELETE, etc.
         mode: 'cors', // no-cors, *cors, same-origin
@@ -218,6 +231,7 @@ export default defineComponent({
         },
         body: JSON.stringify({ sentences_list: this.fileContents[index] }) // body data type must match "Content-Type" header
       })
+      // Load results from the models from the API
       await fetch('http://127.0.0.1:8000/get_sentence_pairs')
         .then(res => res.json())
         .then(data => {
@@ -243,6 +257,7 @@ export default defineComponent({
           console.log('STS counts: ' + data.sts_counts)
           this.timeTaken += data.time
         })
+      // Load the original PDF but now annotated with the results.
       await fetch('http://127.0.0.1:8000/get_ann_pdf', {
         method: 'GET', // *GET, POST, PUT, DELETE, etc.
         mode: 'cors', // no-cors, *cors, same-origin
@@ -261,9 +276,10 @@ export default defineComponent({
       this.indexCurrentPDFUploading += 1
       this.makeProgress(this.indexCurrentPDFUploading, nrOfFiles)
     }
-    // At this point, all results are loaded.
+    // At this point, all results are loaded, so results are displayed.
     this.resultsNotLoaded = false
     document.getElementById('PDFdisplay')!.style.display = 'block'
+    // Show PDF
     this.renderPDF(this.currentIndex)
     console.log(this.allResultsAnalyser)
   },
@@ -272,6 +288,7 @@ export default defineComponent({
       document.getElementById('PDFdisplay')!.setAttribute('src', this.fileURLs[index])
     },
     changePage () {
+      // Navigate to new page based on current value of textbox
       const page = parseInt((document.getElementById('goToPage') as HTMLInputElement).value)
       console.log(page)
       var newPage = page
@@ -290,6 +307,7 @@ export default defineComponent({
       }
     },
     filterTable () {
+      // Checks whether each filter has been applied and filter table in accordance with these filters.
       console.log(this.onlyCurrentPDFSelector, this.showNietConform, this.showConform, this.showNeutraal)
       var intermedResults = this.allResultsAnalyser
       if (!this.showConform) {
@@ -311,10 +329,12 @@ export default defineComponent({
       this.filteredResults = intermedResults
     },
     async reloadAllWithChanges () {
+      // When user pressed the reload button, its corrections are saved to a database and the PDF is then reloaded with the changes made.
       await this.saveChangesToDatabase()
       await this.reloadPDFsWithChanges()
     },
     async saveChangesToDatabase () {
+      // API calls to save the changes made to a database, these values can later be used to retrain the model for better performance.
       const nliLabelsCurrent: string[] = JSON.parse(JSON.stringify(this.allResultsAnalyser.map(function (value, index) { return value[2] })))
       const nliLabelsOrig: string[] = JSON.parse(JSON.stringify(this.unchangedResults.map(function (value, index) { return value[2] })))
       nliLabelsOrig.forEach(async (origLabel, index) => {
@@ -333,6 +353,7 @@ export default defineComponent({
       })
     },
     async reloadPDFsWithChanges () {
+      // Reloads PDF with the changes that were made
       const groupedMap = this.allResultsAnalyser.reduce(
         (entryMap, e) => entryMap.set(e[4], [...entryMap.get(e[4]) || [], e]),
         new Map()
@@ -347,12 +368,14 @@ export default defineComponent({
       for (let index = 0; index < nrOfFiles; index++) {
         const formData = new FormData()
         formData.append('file', this.fileObjects[index])
+        // Send unannotated PDF to API
         await fetch('http://127.0.0.1:8000/post_pdf', {
           method: 'POST', // *GET, POST, PUT, DELETE, etc.
           mode: 'cors', // no-cors, *cors, same-origin
           body: formData // body data type must match "Content-Type" header
         })
         console.log(resultsGrouped[index][1].map((x: any[]) => x[0][1]), resultsGrouped[index][1].map((x: any[]) => x[0][0]), resultsGrouped[index][1].map((x: any[]) => x[1]), resultsGrouped[index][1].map((x: any[]) => x[2]), resultsGrouped[index][1].map((x: any[]) => Math.max(...x[3])))
+        // Re-annotate PDF with the changed values
         await fetch('http://127.0.0.1:8000/get_and_ann_pdf?' + new URLSearchParams({
           sop_sentences: resultsGrouped[index][1].map((x: any[]) => x[0][1].replace(new RegExp(',', 'g'), '$#$')),
           aanbevelingen: resultsGrouped[index][1].map((x: any[]) => x[0][0].replace(new RegExp(',', 'g'), '$#$')),
@@ -389,6 +412,7 @@ export default defineComponent({
       this.goToPrevious()
     },
     resetVars () {
+      // When the user wants to reanalyse but with different strictness, all variables are reset.
       this.resultsNotLoaded = true
       this.currentIndex = 0
       this.totalCount = 0
@@ -399,6 +423,7 @@ export default defineComponent({
       this.indexCurrentPDFUploading = 0
     },
     swapLabel (value: any, index: number) {
+      // Function which loops through the conformity labels, used when the user corrects the model.
       const currentLabel = value[2]
       const labels = ['conform', 'niet conform', 'neutraal']
       const currentIndex = labels.indexOf(currentLabel)
@@ -412,6 +437,7 @@ export default defineComponent({
       }
     },
     labelsUnchanged () {
+      // Function that checks whether any changes have been made to the labels. Button only becomes active when this is the case.
       const nliLabelsCurrent: string[] = JSON.parse(JSON.stringify(this.allResultsAnalyser.map(function (value, index) { return value[2] })))
       const nliLabelsOrig: string[] = JSON.parse(JSON.stringify(this.unchangedResults.map(function (value, index) { return value[2] })))
       var isTheSame = true
@@ -424,6 +450,7 @@ export default defineComponent({
       return isTheSame
     },
     async analyseWithStrictness (strictness: string) {
+      // API calls just like in the 'created' function before but now with a different strictness.
       this.resetVars()
       this.strictnessValue = strictness
       const nrOfFiles = this.fileContents.length
@@ -487,11 +514,13 @@ export default defineComponent({
       this.goToPrevious()
     },
     makeProgress (current: number, total: number) {
+      // Simple functionality for a loading bar which progressed after a single PDF is loaded.
       var bar: HTMLElement = document.querySelector('.progress-bar') as HTMLElement;
       (bar! as HTMLElement).style.width = (current) / total * 100 + '%';
       (bar! as HTMLElement).innerText = ((current) / total * 100).toFixed(0) + '%'
     },
     goToPrevious () {
+      // Goes to previous PDF, with boundary checks
       this.currentIndex = Math.max(0, this.currentIndex - 1)
       document.getElementById('PDFdisplay')!.setAttribute('src', this.fileURLs[this.currentIndex])
       // If only showing the current PDF, the table has to be updated when moving to a new PDF
@@ -501,6 +530,7 @@ export default defineComponent({
       (document.getElementById('goToPage') as HTMLInputElement).value = (this.currentIndex + 1).toString()
     },
     goToNext () {
+      // Goes to next PDF, with boundary checks
       this.currentIndex = Math.min(this.fileObjects.length - 1, this.currentIndex + 1)
       document.getElementById('PDFdisplay')!.setAttribute('src', this.fileURLs[this.currentIndex])
       console.log(this.fileContents[this.currentIndex])
@@ -511,6 +541,7 @@ export default defineComponent({
       (document.getElementById('goToPage') as HTMLInputElement).value = (this.currentIndex + 1).toString()
     },
     getLabelCounts (results: any[]) {
+      // Collects summary information about the conformity labels.
       var labels = results.map(function (row) { return row[2] })
       console.log(labels)
       const conformCount = labels.filter(x => x === 'conform').length
@@ -524,6 +555,7 @@ export default defineComponent({
       return (await page).getTextContent()
     },
     async getText (index: number) {
+      // Extracts text from the PDFs
       const url = this.fileURLs[index]
       const doc = (await pdfjs).getDocument(url).promise
       const nrofPages = (await doc).numPages
@@ -539,22 +571,36 @@ export default defineComponent({
     }
   },
   data () {
+    // Current index of the PDF that is being looked at
     const currentIndex = 0
+    // Information about the PDFs of the SOPs
     const fileURLs: string[] = this.$store.state.fileURLS
     const fileContents: string[][] = this.$store.state.fileContents
     const fileObjects: File[] = this.$store.state.fileObjects
     const fileNames: string[] = this.$store.state.fileNames
     const aanbevelingen: string[] = this.$store.state.aanbevelingen
+    const annotatedFile: File = {} as File
+
+    // Keeps track of current results and original results
     const resultsAnalyser: any[] = []
     const allResultsAnalyser: any[] = []
     const unchangedResults: any[] = []
-    const totalCount = 0
+
+    // While true, results are not displayed. Instead a loading bar is shown.
     const resultsNotLoaded = ref(true)
-    const annotatedFile: File = {} as File
+
+    // Some summary statistics
+    const totalCount = 0
     const timeTaken = 0
     const labelCounts: [number, number, number] = [0, 0, 0]
+
+    // Used strictness when analysing the SOPs
     const strictnessValue = 'Normaal'
+
+    // Used for the progress bar
     const indexCurrentPDFUploading = 0
+
+    // Table filter variables.
     const onlyCurrentPDFSelector = false
     const onlyEnteredAanb = false
     const showConform = true

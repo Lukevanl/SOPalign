@@ -1,4 +1,5 @@
 <template>
+  <!-- Table containing the content of all the annotationg -->
   <div class="panel panel-default">
           <div data-matchheights="t" class="panel-heading">
             <h3 class="panel-title">Analyse per aanbeveling</h3>
@@ -6,6 +7,7 @@
           <div data-matchheights="b" class="panel-body">
           <div class="container-small ">
             <div data-matchheights="d" class="description">
+              <!-- If results not loaded yet, display a loader. -->
               <div v-if="resultsNotLoaded">
                 <font-awesome-icon id="loaderBig" style="text-align: center; left: 50px; margin-top: 30px; margin-bottom: 30px;" icon="spinner" size="4x" spin/>
               </div>

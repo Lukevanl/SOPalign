@@ -10,7 +10,7 @@ import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import VueSlider from 'vue-slider-component'
 import 'vue-slider-component/theme/default.css'
 
-// Create a new store instance.
+// Create cache used to transfer between some pages which are not directly linked.
 const store = createStore({
   state () {
     return {
@@ -45,10 +45,10 @@ const store = createStore({
   }
 })
 
+// Add icons used in the tables
 library.add(faTrashCan, faPenToSquare, faRotate, faQrcode, faPlus, faMagnifyingGlass, faMagnifyingGlassChart, faLocationArrow, faSpinner, faGlobe, faWandMagicSparkles, faUpload)
 const app = createApp(App).component('font-awesome-icon', FontAwesomeIcon)
 app.component('VueSlider', VueSlider)
 app.use(router)
-// Install the store instance as a plugin
 app.use(store)
 app.mount('#app')

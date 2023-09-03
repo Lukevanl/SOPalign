@@ -1,5 +1,7 @@
 from pydantic import BaseModel
 
+#Based on tutorial: https://fastapi.tiangolo.com/tutorial/sql-databases/
+
 class FeedbackBase(BaseModel):
     aanbeveling : str
     aanbeveling_id : str

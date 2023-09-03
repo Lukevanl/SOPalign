@@ -28,6 +28,8 @@ from transformers import RobertaTokenizer, RobertaForSequenceClassification
 
 import fitz
 
+#Based on tutorial: https://fastapi.tiangolo.com/tutorial/sql-databases/
+
 models_sql.Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
@@ -119,19 +121,19 @@ def read_richtlijn(name: str, db: Session = Depends(get_db)):
         raise HTTPException(status_code=404, detail="Richtlijn not found")
     return db_richtlijn
 
-#Save sop contents
+#Save sop contents to global variable
 @app.post("/post_sop")
 def post_sop(sopSentences: SOPsent):
     global sop_sentences
     sop_sentences = sopSentences.sentences_list
 
-#Save entered aanbevelingen
+#Save entered aanbevelingen to global variable
 @app.post("/post_aanbevelingen")
 def post_aanbev(aanbev: Aanbevelingen):
     global aanbevelingen
     aanbevelingen = aanbev.aanbevelingen_list
 
-#TODO: Save entered files
+#Save uploaded file to global variable
 @app.post("/post_pdf")
 async def post_pdf(file: UploadFile):
     global file_object
@@ -309,7 +311,6 @@ def print_results(sentence_pairs, pred, prob, id):
         print(f"Predicted label: {pred[i]}\nFor aanbeveling: \n{pair[0]} \n with ID: {id[i]} AND sop sentence: \n{pair[1]}\n\n\n")
 
 def mapStrictnessToThresholds(chosenStrictness):
-    #strictnessToThresholds = {"Erg Mild": [0.175, 0.625], "Mild": [0.20, 0.675], "Normaal": , "Strikt": , "Erg Strikt": [0.25, 0.76]} #old values
     strictnessToThresholds = {"Extreem Mild": [0.15, 0.575], "Erg Mild": [0.16, 0.600], "Mild": [0.18, 0.64], "Normaal": [0.20, 0.675], "Strikt": [0.215, 0.69], "Erg Strikt": [0.23, 0.71], "Extreem Strikt": [0.24, 0.75]}
     cosine, sts = strictnessToThresholds[chosenStrictness]
     return cosine, sts

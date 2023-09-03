@@ -1,4 +1,5 @@
 <template>
+  <!-- Simple about page showcasing all the relevant parties which contributed to the project. -->
   <div style="background-color: #fafafa;">
   <div class="row justify-content-md-center" style="background-color: #fafafa;">
     <h2 style="text-align: center; margin-top: 20px; margin-bottom: 20px; color: black; font-weight: 600;"> Ontwikkeld door:</h2>
