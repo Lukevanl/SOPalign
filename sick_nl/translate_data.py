@@ -25,11 +25,6 @@ os.chdir(DIRECTORY_ABS)
 def clean_data(sentences): 
     #Make into [(sentence1, sentence2, label)] format
     filtered_data = [(i["sentence1"].strip(), i["sentence2"].strip(), i["gold_label"].strip()) for i in sentences]
-    #Remove long sentences (>750 characters) to prevent errors during translation
-    for i,data in enumerate(filtered_data):
-        if (len(data[0]) > 750 or (len(data[1]) > 750)):
-            print(f"Removed indice {i} because one of the sentences was too large")
-            del filtered_data[i]
     return filtered_data
     
 
@@ -162,7 +157,6 @@ def transform_data(train, dev, test):
     dev = [sent + ["TRIAL"] for sent in dev]
     test = [sent + ["TEST"] for sent in test]
     merged = train + dev + test
-    merged_with_correct_labels = [[s1.replace("\t", " "), s2.replace("\t", ""), label.strip().upper(), 0, ds] for [s1, s2, label, ds] in merged if (len(s1) < 512) and (len(s2) < 512)]
     final_data = merged_with_correct_labels
     return final_data
 
