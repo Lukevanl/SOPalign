@@ -157,6 +157,7 @@ def transform_data(train, dev, test):
     dev = [sent + ["TRIAL"] for sent in dev]
     test = [sent + ["TEST"] for sent in test]
     merged = train + dev + test
+    merged_with_correct_labels = [[s1.replace("\t", " "), s2.replace("\t", ""), label.strip().upper(), 0, ds] for [s1, s2, label, ds] in merged]
     final_data = merged_with_correct_labels
     return final_data
 
